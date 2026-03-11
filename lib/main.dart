@@ -2,12 +2,10 @@ import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/splashscreen_page.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
   await Firebase.initializeApp();
-  
-
+  runApp(const MyApp());
 }
 
 
