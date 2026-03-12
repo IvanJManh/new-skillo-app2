@@ -83,11 +83,28 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
       if (!mounted) return;
 
       setState(() {
-        if (poses.isNotEmpty) {
-          final pose = poses.first;
-          _statusText = 'Pose detected ✅  Landmarks: ${pose.landmarks.length}';
+        if (poses.isEmpty) {
+          _statusText = 'Stand in front of the camera';
+          return;
+        }
+
+        final pose = poses.first;
+
+        final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
+        final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
+        final nose = pose.landmarks[PoseLandmarkType.nose];
+
+        if (leftShoulder == null || rightShoulder == null || nose == null) {
+          _statusText = 'Hold still for posture check';
+          return;
+        }
+
+        final shoulderDiff = (leftShoulder.y - rightShoulder.y).abs();
+
+        if (shoulderDiff < 25) {
+          _statusText = 'Good posture ✅';
         } else {
-          _statusText = 'No pose detected';
+          _statusText = 'Keep your shoulders straight';
         }
       });
     } catch (e) {
