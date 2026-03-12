@@ -1,5 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
 class PoseCameraScreen extends StatefulWidget {
@@ -13,6 +19,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
   CameraController? _controller;
   late final PoseDetector _poseDetector;
 
+  bool _isProcessing = false;
   String _statusText = 'Starting camera...';
 
   @override
@@ -40,6 +47,8 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
       frontCamera,
       ResolutionPreset.medium,
       enableAudio: false,
+      imageFormatGroup:
+          Platform.isIOS ? ImageFormatGroup.bgra8888 : ImageFormatGroup.yuv420,
     );
 
     await _controller!.initialize();
@@ -47,8 +56,88 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     if (!mounted) return;
 
     setState(() {
-      _statusText = 'Pose detector ready ✅';
+      _statusText = 'Camera ready...';
     });
+
+    await _controller!.startImageStream(_processCameraImage);
+
+    if (!mounted) return;
+    setState(() {
+      _statusText = 'Detecting pose...';
+    });
+  }
+
+  Future<void> _processCameraImage(CameraImage image) async {
+    if (_isProcessing || _controller == null) return;
+
+    _isProcessing = true;
+
+    try {
+      final inputImage = _inputImageFromCameraImage(
+        image,
+        _controller!.description,
+      );
+
+      final poses = await _poseDetector.processImage(inputImage);
+
+      if (!mounted) return;
+
+      setState(() {
+        if (poses.isNotEmpty) {
+          final pose = poses.first;
+          _statusText = 'Pose detected ✅  Landmarks: ${pose.landmarks.length}';
+        } else {
+          _statusText = 'No pose detected';
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _statusText = 'Pose error';
+      });
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  InputImage _inputImageFromCameraImage(
+    CameraImage image,
+    CameraDescription description,
+  ) {
+    final WriteBuffer allBytes = WriteBuffer();
+
+    for (final Plane plane in image.planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+
+    final Uint8List bytes = allBytes.done().buffer.asUint8List();
+
+    final Size imageSize = Size(
+      image.width.toDouble(),
+      image.height.toDouble(),
+    );
+
+    final InputImageRotation rotation =
+        InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
+            InputImageRotation.rotation0deg;
+
+    final InputImageFormat format =
+        InputImageFormatValue.fromRawValue(image.format.raw) ??
+            (Platform.isIOS
+                ? InputImageFormat.bgra8888
+                : InputImageFormat.yuv420);
+
+    final InputImageMetadata metadata = InputImageMetadata(
+      size: imageSize,
+      rotation: rotation,
+      format: format,
+      bytesPerRow: image.planes.first.bytesPerRow,
+    );
+
+    return InputImage.fromBytes(
+      bytes: bytes,
+      metadata: metadata,
+    );
   }
 
   @override
