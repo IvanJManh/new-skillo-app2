@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
 class PoseCameraScreen extends StatefulWidget {
   const PoseCameraScreen({super.key});
@@ -10,10 +11,20 @@ class PoseCameraScreen extends StatefulWidget {
 
 class _PoseCameraScreenState extends State<PoseCameraScreen> {
   CameraController? _controller;
+  late final PoseDetector _poseDetector;
+
+  String _statusText = 'Starting camera...';
 
   @override
   void initState() {
     super.initState();
+
+    _poseDetector = PoseDetector(
+      options: PoseDetectorOptions(
+        mode: PoseDetectionMode.stream,
+      ),
+    );
+
     _initCamera();
   }
 
@@ -34,12 +45,16 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     await _controller!.initialize();
 
     if (!mounted) return;
-    setState(() {});
+
+    setState(() {
+      _statusText = 'Pose detector ready ✅';
+    });
   }
 
   @override
   void dispose() {
     _controller?.dispose();
+    _poseDetector.close();
     super.dispose();
   }
 
@@ -57,7 +72,32 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
       appBar: AppBar(
         title: const Text('Pose Camera'),
       ),
-      body: CameraPreview(_controller!),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: CameraPreview(_controller!),
+          ),
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                _statusText,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

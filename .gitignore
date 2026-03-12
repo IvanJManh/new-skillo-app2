@@ -1,2 +1,13 @@
 .dart_tool/
 build/
+.idea/
+android/.gradle/
+android/local.properties
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+macos/Flutter/ephemeral/
+macos/Podfile.lock
+macos/Pods/
+macos/Runner.xcworkspace/
+windows/flutter/ephemeral/
+.flutter-plugins-dependencies
