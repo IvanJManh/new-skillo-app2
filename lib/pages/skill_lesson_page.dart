@@ -15,7 +15,7 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
 
   final List<Map<String, String>> skills = [
     {
-      'title': 'Communication',
+      'title': 'Improve Communication',
       'description':
           'Learn how to express your ideas clearly and confidently in daily conversations.',
     },
@@ -28,6 +28,26 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
       'title': 'Facial Expressions',
       'description':
           'Improve your expressions so you look more friendly, confident, and engaging while speaking.',
+    },
+    {
+      'title': 'Active Listning',
+      'description':
+          'Practice showing that you are listening by nodding, maintaining eye contact, and reacting appropriately during conversations.',
+    },
+    {
+      'title': 'Confident Walking',
+      'description':
+          'Learn how to walk confidently with upright posture, steady pace, and relaxed body language.',
+    },
+    {
+      'title': 'Facial Expressions',
+      'description':
+          'Improve your expressions so you look more friendly, confident, and engaging while speaking.',
+    },
+    {
+      'title': 'Greeting Someone Politely',
+      'description':
+          'Learn how to greet people politely using friendly words, tone, and body language.',
     },
     {
       'title': 'Time Management',
