@@ -14,12 +14,6 @@ class _PracticeFacialExpressionScreenState
   String feedbackMessage = "Start practicing your facial expressions!";
   bool isProcessing = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _initCamera();
-  }
-
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
     final frontCamera = _cameras!.firstWhere(
