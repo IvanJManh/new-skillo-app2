@@ -20,7 +20,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
   late final PoseDetector _poseDetector;
 
   bool _isProcessing = false;
-  String _statusText = 'Starting camera...';
+  String _statusText = ' AI feedback running...';
 
   @override
   void initState() {
@@ -56,14 +56,14 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     if (!mounted) return;
 
     setState(() {
-      _statusText = 'Camera ready...';
+      _statusText = 'Posture check active';
     });
 
     await _controller!.startImageStream(_processCameraImage);
 
     if (!mounted) return;
     setState(() {
-      _statusText = 'Detecting pose...';
+      _statusText = 'AI feedback running ';
     });
   }
 
@@ -110,7 +110,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _statusText = 'Pose error';
+        _statusText = 'Unable to read posture';
       });
     } finally {
       _isProcessing = false;
