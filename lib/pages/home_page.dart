@@ -4,6 +4,7 @@ import 'package:newskilloapp/pages/progress_page.dart';
 import 'package:newskilloapp/pages/saved_skills_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
+import 'package:newskilloapp/pages/skill_lesson_page.dart';
 
 class HomePage extends StatefulWidget {
   final SkillNotifier skillNotifier;
@@ -207,7 +208,7 @@ class HomeContent extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const PoseCameraScreen(),
+                              builder: (_) => const SkillLessonPage(),
                             ),
                           );
                         } else {
