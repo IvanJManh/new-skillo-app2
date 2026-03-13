@@ -20,7 +20,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
   late final PoseDetector _poseDetector;
 
   bool _isProcessing = false;
-  String _statusText = ' AI feedback running...';
+  String _statusText = 'AI feedback running.....';
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
 
     if (!mounted) return;
     setState(() {
-      _statusText = 'AI feedback running ';
+      _statusText = 'AI feedback running';
     });
   }
 
