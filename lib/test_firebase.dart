@@ -1,32 +1,35 @@
-
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
+}
 
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        // loading
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+    return MaterialApp(
+      title: 'Firebase Flutter Demo',
+      home: MyHomePage(),
+    );
+  }
+}
 
-        // logged in
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        }
-
-        // logged out
-        return const LoginScreen();
-      },
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Firebase Setup Complete!'),
+      ),
+      body: Center(
+        child: Text('Firebase is now connected!'),
+      ),
     );
   }
 }
