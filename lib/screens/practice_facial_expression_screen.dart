@@ -10,12 +10,15 @@ class PracticeFacialExpressionScreen extends StatefulWidget {
 class _PracticeFacialExpressionScreenState
     extends State<PracticeFacialExpressionScreen> {
   CameraController? _cameraController;
-  String feedbackMessage = "Start practicing your facial expressions!";
+  List<String> expressions = ["Smile", "Frown", "Surprise", "Neutral"];
+  int currentExpressionIndex = 0;
+  late String feedbackMessage;
   bool isProcessing = false;
 
   @override
   void initState() {
     super.initState();
+    feedbackMessage = "Practice: ${expressions[currentExpressionIndex]}";
     _initCamera();
   }
 
