@@ -54,7 +54,7 @@ class _PracticeFacialExpressionScreenState
             child: Text(feedbackMessage, style: TextStyle(fontSize: 18)),
           ),
           ElevatedButton(
-            onPressed: _analyzeFacialExpression,
+            onPressed: isProcessing ? null : _analyzeFacialExpression,
             child: Text("Analyze Expression"),
           ),
         ],
