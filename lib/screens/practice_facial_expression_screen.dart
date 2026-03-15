@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
 class PracticeFacialExpressionScreen extends StatefulWidget {
   @override
@@ -8,6 +9,8 @@ class PracticeFacialExpressionScreen extends StatefulWidget {
 
 class _PracticeFacialExpressionScreenState
     extends State<PracticeFacialExpressionScreen> {
+  CameraController? _cameraController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
