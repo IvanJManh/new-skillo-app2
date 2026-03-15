@@ -27,7 +27,8 @@ class _PracticeFacialExpressionScreenState
       final cameras = await availableCameras();
       final frontCamera = cameras.firstWhere(
           (camera) => camera.lensDirection == CameraLensDirection.front);
-      _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
+      _cameraController =
+          CameraController(frontCamera, ResolutionPreset.medium);
       await _cameraController!.initialize();
       setState(() {});
     } catch (e) {
@@ -45,13 +46,16 @@ class _PracticeFacialExpressionScreenState
     });
     try {
       // Capture image
-      final image = await _cameraController!.takePicture();
+      final image = await _cameraController!
+          .takePicture(); // ignore: unused_local_variable
       // TODO: Send image to AI API for facial expression analysis
       // Mock analysis
       await Future.delayed(Duration(seconds: 2));
       setState(() {
-        currentExpressionIndex = (currentExpressionIndex + 1) % expressions.length;
-        feedbackMessage = "Good! Now practice: ${expressions[currentExpressionIndex]}";
+        currentExpressionIndex =
+            (currentExpressionIndex + 1) % expressions.length;
+        feedbackMessage =
+            "Good! Now practice: ${expressions[currentExpressionIndex]}";
         isProcessing = false;
       });
     } catch (e) {
@@ -63,6 +67,7 @@ class _PracticeFacialExpressionScreenState
   }
 
   @override
+  void dispose() {
     _cameraController?.dispose();
     super.dispose();
   }

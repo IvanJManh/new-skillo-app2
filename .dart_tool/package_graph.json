@@ -7,13 +7,22 @@
       "name": "newskilloapp",
       "version": "1.0.0+1",
       "dependencies": [
+        "camera",
         "firebase_auth",
         "firebase_core",
         "fl_chart",
         "flutter"
       ],
       "devDependencies": [
+        "flutter_lints",
         "flutter_test"
+      ]
+    },
+    {
+      "name": "flutter_lints",
+      "version": "3.0.2",
+      "dependencies": [
+        "lints"
       ]
     },
     {
@@ -32,6 +41,18 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "camera",
+      "version": "0.10.6",
+      "dependencies": [
+        "camera_android",
+        "camera_avfoundation",
+        "camera_platform_interface",
+        "camera_web",
+        "flutter",
+        "flutter_plugin_android_lifecycle"
       ]
     },
     {
@@ -76,6 +97,11 @@
         "sky_engine",
         "vector_math"
       ]
+    },
+    {
+      "name": "lints",
+      "version": "3.0.0",
+      "dependencies": []
     },
     {
       "name": "stream_channel",
@@ -159,6 +185,53 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "flutter_plugin_android_lifecycle",
+      "version": "2.0.33",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "camera_web",
+      "version": "0.3.5+3",
+      "dependencies": [
+        "camera_platform_interface",
+        "flutter",
+        "flutter_web_plugins",
+        "stream_transform",
+        "web"
+      ]
+    },
+    {
+      "name": "camera_platform_interface",
+      "version": "2.12.0",
+      "dependencies": [
+        "cross_file",
+        "flutter",
+        "plugin_platform_interface",
+        "stream_transform"
+      ]
+    },
+    {
+      "name": "camera_avfoundation",
+      "version": "0.9.23+2",
+      "dependencies": [
+        "camera_platform_interface",
+        "flutter",
+        "stream_transform"
+      ]
+    },
+    {
+      "name": "camera_android",
+      "version": "0.10.10+15",
+      "dependencies": [
+        "camera_platform_interface",
+        "flutter",
+        "flutter_plugin_android_lifecycle",
+        "stream_transform"
       ]
     },
     {
@@ -293,6 +366,23 @@
       ]
     },
     {
+      "name": "web",
+      "version": "1.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "stream_transform",
+      "version": "2.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
       "name": "plugin_platform_interface",
       "version": "2.1.8",
       "dependencies": [
@@ -300,9 +390,12 @@
       ]
     },
     {
-      "name": "web",
-      "version": "1.1.1",
-      "dependencies": []
+      "name": "cross_file",
+      "version": "0.3.5+2",
+      "dependencies": [
+        "meta",
+        "web"
+      ]
     },
     {
       "name": "http_parser",
@@ -312,13 +405,6 @@
         "source_span",
         "string_scanner",
         "typed_data"
-      ]
-    },
-    {
-      "name": "flutter_web_plugins",
-      "version": "0.0.0",
-      "dependencies": [
-        "flutter"
       ]
     },
     {
