@@ -37,8 +37,10 @@ class _PracticeFacialExpressionScreenState
     // Capture image
     final image = await _cameraController!.takePicture();
     // TODO: Send image to AI API for facial expression analysis
+    // Mock analysis
+    await Future.delayed(Duration(seconds: 2));
     setState(() {
-      feedbackMessage = "Image captured. Analysis pending.";
+      feedbackMessage = "Try to smile naturally.";
       isProcessing = false;
     });
   }
