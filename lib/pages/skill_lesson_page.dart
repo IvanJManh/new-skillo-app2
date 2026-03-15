@@ -40,9 +40,19 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
           'Learn how to walk confidently with upright posture, steady pace, and relaxed body language.',
     },
     {
-      'title': 'Facial Expressions',
+      'title': 'Thanking Someone Properly',
       'description':
-          'Improve your expressions so you look more friendly, confident, and engaging while speaking.',
+          'Practice expressing gratitude sincerely using words, tone, and facial expression.',
+    },
+    {
+      'title': 'Simple Yoga Pose (Tree Pose)',
+      'description':
+          'Stand on one leg and place the other foot on your inner thigh. AI checks balance and body posture.',
+    },
+    {
+      'title': 'Hand Raise Detection',
+      'description':
+          'Practice raising your hand straight above your head. AI can detect the position of the arm and shoulder alignment.',
     },
     {
       'title': 'Greeting Someone Politely',
