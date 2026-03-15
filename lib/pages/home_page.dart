@@ -4,6 +4,7 @@ import 'package:newskilloapp/pages/progress_page.dart';
 import 'package:newskilloapp/pages/saved_skills_page.dart';
 
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/screens/practice_facial_expression_screen.dart';
 
 class HomePage extends StatefulWidget {
   final SkillNotifier skillNotifier;
@@ -204,14 +205,14 @@ class HomeContent extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         if (index == 0) {
-                          // Facial expression feature removed
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) =>
-                          //         PracticeFacialExpressionScreen(),
-                          //   ),
-                          // );
+                          // Navigate to facial expression practice screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PracticeFacialExpressionScreen(),
+                            ),
+                          );
                         } else {
                           final homeState =
                               context.findAncestorStateOfType<_HomePageState>();
