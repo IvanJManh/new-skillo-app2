@@ -12,6 +12,16 @@ class _PracticeFacialExpressionScreenState
   CameraController? _cameraController;
 
   @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    // TODO: Initialize camera
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Facial Expression Practice")),
