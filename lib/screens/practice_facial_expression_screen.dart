@@ -50,7 +50,8 @@ class _PracticeFacialExpressionScreenState
       // Mock analysis
       await Future.delayed(Duration(seconds: 2));
       setState(() {
-        feedbackMessage = "Try to smile naturally.";
+        currentExpressionIndex = (currentExpressionIndex + 1) % expressions.length;
+        feedbackMessage = "Good! Now practice: ${expressions[currentExpressionIndex]}";
         isProcessing = false;
       });
     } catch (e) {
