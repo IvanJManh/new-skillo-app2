@@ -20,12 +20,18 @@ class _PracticeFacialExpressionScreenState
   }
 
   Future<void> _initCamera() async {
-    final cameras = await availableCameras();
-    final frontCamera = cameras.firstWhere(
-        (camera) => camera.lensDirection == CameraLensDirection.front);
-    _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
-    await _cameraController!.initialize();
-    setState(() {});
+    try {
+      final cameras = await availableCameras();
+      final frontCamera = cameras.firstWhere(
+          (camera) => camera.lensDirection == CameraLensDirection.front);
+      _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
+      await _cameraController!.initialize();
+      setState(() {});
+    } catch (e) {
+      setState(() {
+        feedbackMessage = "Camera initialization failed: $e";
+      });
+    }
   }
 
   void _analyzeFacialExpression() async {
