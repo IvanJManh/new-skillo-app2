@@ -67,23 +67,26 @@ class _PracticeFacialExpressionScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Facial Expression Practice")),
-      body: Column(
-        children: [
-          Expanded(
-            child: _cameraController != null &&
-                    _cameraController!.value.isInitialized
-                ? CameraPreview(_cameraController!)
-                : Center(child: CircularProgressIndicator()),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(feedbackMessage, style: TextStyle(fontSize: 18)),
-          ),
-          ElevatedButton(
-            onPressed: isProcessing ? null : _analyzeFacialExpression,
-            child: Text("Analyze Expression"),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: _cameraController != null &&
+                      _cameraController!.value.isInitialized
+                  ? CameraPreview(_cameraController!)
+                  : Center(child: CircularProgressIndicator()),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(feedbackMessage, style: TextStyle(fontSize: 18)),
+            ),
+            ElevatedButton(
+              onPressed: isProcessing ? null : _analyzeFacialExpression,
+              child: Text("Analyze Expression"),
+            ),
+          ],
+        ),
       ),
     );
   }
