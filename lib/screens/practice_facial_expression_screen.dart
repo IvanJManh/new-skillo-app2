@@ -27,8 +27,11 @@ class _PracticeFacialExpressionScreenState
     setState(() {});
   }
 
+  void _analyzeFacialExpression() {
+    // TODO: Implement analysis
+  }
+
   @override
-  void dispose() {
     _cameraController?.dispose();
     super.dispose();
   }
@@ -48,6 +51,10 @@ class _PracticeFacialExpressionScreenState
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(feedbackMessage, style: TextStyle(fontSize: 18)),
+          ),
+          ElevatedButton(
+            onPressed: _analyzeFacialExpression,
+            child: Text("Analyze Expression"),
           ),
         ],
       ),
