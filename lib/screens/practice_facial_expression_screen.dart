@@ -40,15 +40,22 @@ class _PracticeFacialExpressionScreenState
     setState(() {
       isProcessing = true;
     });
-    // Capture image
-    final image = await _cameraController!.takePicture();
-    // TODO: Send image to AI API for facial expression analysis
-    // Mock analysis
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      feedbackMessage = "Try to smile naturally.";
-      isProcessing = false;
-    });
+    try {
+      // Capture image
+      final image = await _cameraController!.takePicture();
+      // TODO: Send image to AI API for facial expression analysis
+      // Mock analysis
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        feedbackMessage = "Try to smile naturally.";
+        isProcessing = false;
+      });
+    } catch (e) {
+      setState(() {
+        feedbackMessage = "Analysis failed: $e";
+        isProcessing = false;
+      });
+    }
   }
 
   @override
