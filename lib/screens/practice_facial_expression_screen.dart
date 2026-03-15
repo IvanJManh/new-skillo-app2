@@ -28,8 +28,19 @@ class _PracticeFacialExpressionScreenState
     setState(() {});
   }
 
-  void _analyzeFacialExpression() {
-    // TODO: Implement analysis
+  void _analyzeFacialExpression() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized)
+      return;
+    setState(() {
+      isProcessing = true;
+    });
+    // Capture image
+    final image = await _cameraController!.takePicture();
+    // TODO: Send image to AI API for facial expression analysis
+    setState(() {
+      feedbackMessage = "Image captured. Analysis pending.";
+      isProcessing = false;
+    });
   }
 
   @override
