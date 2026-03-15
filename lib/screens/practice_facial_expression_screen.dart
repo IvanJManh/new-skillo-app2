@@ -27,6 +27,12 @@ class _PracticeFacialExpressionScreenState
   }
 
   @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Facial Expression Practice")),
