@@ -18,7 +18,12 @@ class _PracticeFacialExpressionScreenState
   }
 
   Future<void> _initCamera() async {
-    // TODO: Initialize camera
+    final cameras = await availableCameras();
+    final frontCamera = cameras.firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.front);
+    _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
+    await _cameraController!.initialize();
+    setState(() {});
   }
 
   @override
