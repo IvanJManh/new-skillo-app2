@@ -36,9 +36,9 @@ class _PracticeFacialExpressionScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Facial Expression Practice")),
-      body: Center(
-        child: Text("Facial Expression Practice Screen"),
-      ),
+      body: _cameraController != null && _cameraController!.value.isInitialized
+          ? CameraPreview(_cameraController!)
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
