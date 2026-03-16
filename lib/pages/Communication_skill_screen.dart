@@ -105,7 +105,7 @@ Future<void> _saveProgressToFirebase(String feedback, int score) async {
     debugPrint("Firestore Save Error: $e");
   }
 }
-@override
+@@override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -129,6 +129,7 @@ Future<void> _saveProgressToFirebase(String feedback, int score) async {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
               ),
               child: Text(_inputContent),
             ),
@@ -144,13 +145,34 @@ Future<void> _saveProgressToFirebase(String feedback, int score) async {
                 const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _getAIFeedback,
-                  child: const Text("GET FEEDBACK"),
+                  child: Text(_isLoading ? "Processing..." : "GET FEEDBACK"),
                 ),
               ],
             ),
+            
+            if (_aiFeedback.isNotEmpty) ...[
+              const SizedBox(height: 30),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
+                ),
+                child: Column(
+                  children: [
+                    Text("Coach Analysis", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                    const Divider(),
+                    Text(_aiFeedback),
+                    const SizedBox(height: 10),
+                    Text("Score: $_score/10", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
-}
+} 
