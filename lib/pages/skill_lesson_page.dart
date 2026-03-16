@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
 
 class SkillLessonPage extends StatefulWidget {
@@ -12,6 +13,9 @@ class SkillLessonPage extends StatefulWidget {
 
 class _SkillLessonPageState extends State<SkillLessonPage> {
   late final Map<String, String> selectedSkill;
+
+  late VideoPlayerController _videoController;
+  bool _isVideoReady = false;
 
   final List<Map<String, String>> skills = [
     {
@@ -70,6 +74,21 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   void initState() {
     super.initState();
     selectedSkill = skills[Random().nextInt(skills.length)];
+
+    _videoController = VideoPlayerController.asset(
+      'assets/videos/communication.mp4',
+    )
+      ..initialize().then((_) {
+        setState(() {
+          _isVideoReady = true;
+        });
+      });    
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,16 +106,14 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
               width: double.infinity,
               height: 220,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 71, 172, 200),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Center(
-                child: Icon(
-                  Icons.play_circle_fill,
-                  size: 80,
-                  color: Colors.white,
-                ),
-              ),
+              child: _isVideoReady
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: VideoPlayer(_videoController),
+                    )
+                  : const Center(child: CircularProgressIndicator()),
             ),
             const SizedBox(height: 24),
             Text(
