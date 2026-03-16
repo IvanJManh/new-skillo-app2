@@ -80,3 +80,28 @@ Future<void> _getAIFeedback() async {
     setState(() => _isLoading = false);
   }
 }
+
+// ☁️ Firestore Save Logic
+Future<void> _saveProgressToFirebase(String feedback, int score) async {
+  try {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('history')
+        .add({
+      'skillType': 'Communication',
+      'content': _inputContent,
+      'aiFeedback': feedback,
+      'score': score,
+      'timestamp': FieldValue.serverTimestamp(),
+      'isCompleted': true,
+    });
+
+    debugPrint("Progress saved to Firebase successfully!");
+  } catch (e) {
+    debugPrint("Firestore Save Error: $e");
+  }
+}
