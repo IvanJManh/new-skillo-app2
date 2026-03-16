@@ -40,3 +40,43 @@ class _CommunicationSkillScreenState extends State<CommunicationSkillScreen> {
     );
   }
 }
+
+// 🤖 AI Feedback Logic
+Future<void> _getAIFeedback() async {
+  if (_inputContent.isEmpty || _inputContent.contains("Tap the mic")) return;
+
+  setState(() {
+    _isLoading = true;
+    _aiFeedback = "";
+  });
+
+  try {
+    final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: _apiKey);
+
+    final prompt = """
+      You are a communication coach. Analyze this speech: "$_inputContent"
+      Provide the following:
+      1. Score: (A number from 1 to 10)
+      2. Feedback: (A 2-sentence encouraging analysis)
+      3. Better Version: (How to say it more professionally)
+      """;
+
+    final response = await model.generateContent([Content.text(prompt)]);
+    final feedbackText = response.text ?? "AI could not generate feedback.";
+
+    final scoreRegExp = RegExp(r'Score:\s*(\d+)');
+    final match = scoreRegExp.firstMatch(feedbackText);
+    int detectedScore = int.tryParse(match?.group(1) ?? "7") ?? 7;
+
+    setState(() {
+      _aiFeedback = feedbackText;
+      _score = detectedScore;
+    });
+
+    await _saveProgressToFirebase(feedbackText, detectedScore);
+  } catch (e) {
+    setState(() => _aiFeedback = "Error connecting to AI: $e");
+  } finally {
+    setState(() => _isLoading = false);
+  }
+}
