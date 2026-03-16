@@ -105,31 +105,52 @@ Future<void> _saveProgressToFirebase(String feedback, int score) async {
     debugPrint("Firestore Save Error: $e");
   }
 }
-
 @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.grey[100],
-    appBar: AppBar(
-      title: Text("AI Communication Coach",
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-      backgroundColor: Colors.blueAccent,
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    body: SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Text(
-            "Improve your speaking skills with AI feedback",
-            style: GoogleFonts.poppins(fontSize: 16, color: Colors.blueGrey),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 30),
-          // We will add the Input Box and Buttons in the next commits!
-        ],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text("AI Coach", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
       ),
-    ),
-  );
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Text(
+              "Improve your speaking skills",
+              style: GoogleFonts.poppins(fontSize: 16, color: Colors.blueGrey),
+            ),
+            const SizedBox(height: 30),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(_inputContent),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  onPressed: _listen,
+                  backgroundColor: _isListening ? Colors.red : Colors.blueAccent,
+                  child: Icon(_isListening ? Icons.stop : Icons.mic),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _getAIFeedback,
+                  child: const Text("GET FEEDBACK"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
