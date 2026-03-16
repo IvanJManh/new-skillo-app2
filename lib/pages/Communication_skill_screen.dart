@@ -105,3 +105,31 @@ Future<void> _saveProgressToFirebase(String feedback, int score) async {
     debugPrint("Firestore Save Error: $e");
   }
 }
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.grey[100],
+    appBar: AppBar(
+      title: Text("AI Communication Coach",
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+      backgroundColor: Colors.blueAccent,
+      foregroundColor: Colors.white,
+      elevation: 0,
+    ),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Text(
+            "Improve your speaking skills with AI feedback",
+            style: GoogleFonts.poppins(fontSize: 16, color: Colors.blueGrey),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 30),
+          // We will add the Input Box and Buttons in the next commits!
+        ],
+      ),
+    ),
+  );
+}
