@@ -136,51 +136,67 @@ class HomePage extends StatefulWidget {
         ],
       ),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: Color.fromARGB(255, 71, 172, 200),
-            width: 1.5,
-          ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30), // FIXED
-          child: Theme(data: ThemeData(
-            canvasColor: Colors.white,
-          ), 
-          child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                _pageController.jumpToPage(index);
-              },
+  height: 65, // 🔥 force proper vertical space
+  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    border: Border.all(
+      color: Color.fromARGB(255, 71, 172, 200),
+      width: 1.5,
+    ),
+  ),
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(30),
+    child: BottomNavigationBar(
+      backgroundColor: Colors.white,
+  type: BottomNavigationBarType.fixed,
+  currentIndex: _currentIndex,
+  onTap: (index) {
+    _pageController.jumpToPage(index);
+  },
+  items: const [
+  BottomNavigationBarItem(
+    icon: Padding(
+      padding: EdgeInsets.only(top: 18),
+      child: Icon(Icons.home),
+    ),
+    label: '',
+  ),
+  BottomNavigationBarItem(
+    icon: Padding(
+      padding: EdgeInsets.only(top: 18),
+      child: Icon(Icons.book),
+    ),
+    label: '',
+  ),
+  BottomNavigationBarItem(
+    icon: Padding(
+      padding: EdgeInsets.only(top: 18),
+      child: Icon(Icons.bar_chart),
+    ),
+    label: '',
+  ),
+  BottomNavigationBarItem(
+    icon: Padding(
+      padding: EdgeInsets.only(top: 18),
+      child: Icon(Icons.person),
+    ),
+    label: '',
+  ),
+],
+  selectedItemColor: Color.fromARGB(255, 71, 172, 200),
+  unselectedItemColor: Colors.grey,
+  showSelectedLabels: false,
+  showUnselectedLabels: false,
+  elevation: 0,
 
-            items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: '',
-            ),
-          ],
-          selectedItemColor: Color.fromARGB(255, 71, 172, 200),
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-
-          ),
-          ),
-        ),
-      ),
+  // 🔥 IMPORTANT FIXES
+  iconSize: 20,
+  selectedFontSize: 0,
+  unselectedFontSize: 0,
+),
+  ),
+),
 
       );
   }
