@@ -251,10 +251,10 @@ class HomePage extends StatefulWidget {
                   child: Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(8), // FIXED
+                        padding: EdgeInsets.all(10), // FIXED
                         child: Image.asset(
                           index == 0? 'lib/images/IMG_2238.PNG' : 'lib/images/IMG_2239.PNG',
-                          height: 100,
+                          height: 130,
                         ),
                         ),
                         Text(
