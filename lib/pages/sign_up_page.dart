@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/sign_in_page.dart';
 import 'package:newskilloapp/pages/home_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/services/auth_service.dart';
+import 'package:newskilloapp/auth.gate.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -15,9 +17,11 @@ final _nameController = TextEditingController();
 
 class _SignUpPageState extends State<SignUpPage>{
   //final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _auth = AuthService();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _emailController =TextEditingController();
+  bool _isLoading = false;
   String? _errorText;
   SkillNotifier skillNotifier = SkillNotifier();
 
@@ -154,29 +158,54 @@ class _SignUpPageState extends State<SignUpPage>{
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _errorText != null ? null : () async{
-
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(
-                        skillNotifier: skillNotifier,
-                        userName: _nameController.text,
-                        userEmail: _emailController.text),
-                    ),
-                    );
-                    /*if (_passwordController.text == _confirmPasswordController.text){
-                      print('Signed up');
-                    }else{
-                      print('password doesnt match');
-                    }*/
+                  onPressed: (_errorText != null || _isLoading) ? null : () async{
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    try {
+                      final cred = await _auth.signUp(
+                        email: _emailController.text, 
+                        password: _passwordController.text
+                      );
+                      
+                      // Optionally update display name
+                      if (_nameController.text.isNotEmpty) {
+                        await cred.user?.updateDisplayName(_nameController.text);
+                      }
+                      
+                      if (mounted) {
+                        Navigator.pushAndRemoveUntil(
+                          context, 
+                          MaterialPageRoute(builder: (context) => const AuthGate()),
+                          (route) => false
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Sign up failed: $e")),
+                        );
+                      }
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    }
                   }, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 71, 172, 200),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(30),
                     )
-                  ), child: Text(
+                  ), child: _isLoading 
+                ? const SizedBox(
+                    height: 20, 
+                    width: 20, 
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                  )
+                : const Text(
                     'Sign up',
                     style: TextStyle(
                       color: Color.fromARGB(255, 255, 255, 255),

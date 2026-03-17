@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newskilloapp/pages/sign_in_page.dart';
+import 'package:newskilloapp/auth.gate.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -9,11 +9,9 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(const Duration(seconds: 2), (){
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const SignInPage())
+        MaterialPageRoute(builder: (context) => const AuthGate())
       );
     });
-        
-
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 71, 172, 200),
       body: Column(
