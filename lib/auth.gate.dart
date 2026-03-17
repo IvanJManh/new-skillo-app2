@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'pages/home_page.dart';
+import 'pages/sign_in_page.dart';
+import 'pages/skill_notifier.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -20,11 +21,16 @@ class AuthGate extends StatelessWidget {
 
         // logged in
         if (snapshot.hasData) {
-          return const HomeScreen();
+          final user = snapshot.data!;
+          return HomePage(
+            skillNotifier: SkillNotifier(),
+            userName: user.displayName ?? "User",
+            userEmail: user.email ?? "",
+          );
         }
 
         // logged out
-        return const LoginScreen();
+        return const SignInPage();
       },
     );
   }
