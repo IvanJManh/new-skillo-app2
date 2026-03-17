@@ -222,7 +222,7 @@ class HomePage extends StatefulWidget {
                   crossAxisCount: 1,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 2,
-                  childAspectRatio: 2.8,
+                  childAspectRatio: 2.3,
                   ),
                 itemCount: 2,
                 itemBuilder: (context, index) {
