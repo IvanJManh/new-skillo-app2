@@ -59,5 +59,10 @@ class DefaultFirebaseOptions {
     projectId: 'skilloapp-5d67c',
     storageBucket: 'skilloapp-5d67c.firebasestorage.app',
   );
+<<<<<<< HEAD
 
 }
+=======
+}
+
+>>>>>>> b5bfc17ca0b9130692194d8a5b51de746a464686
