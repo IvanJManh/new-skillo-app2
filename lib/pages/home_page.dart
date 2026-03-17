@@ -136,7 +136,7 @@ class HomePage extends StatefulWidget {
         ],
       ),
       bottomNavigationBar: Container(
-  height: 65, // 🔥 force proper vertical space
+  height: 65,
   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
   decoration: BoxDecoration(
     borderRadius: BorderRadius.circular(30),
@@ -149,52 +149,50 @@ class HomePage extends StatefulWidget {
     borderRadius: BorderRadius.circular(30),
     child: BottomNavigationBar(
       backgroundColor: Colors.white,
-  type: BottomNavigationBarType.fixed,
-  currentIndex: _currentIndex,
-  onTap: (index) {
-    _pageController.jumpToPage(index);
-  },
-  items: const [
-  BottomNavigationBarItem(
-    icon: Padding(
-      padding: EdgeInsets.only(top: 18),
-      child: Icon(Icons.home),
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _currentIndex,
+      onTap: (index) {
+        _pageController.jumpToPage(index);
+      },
+      items: [
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top / 1.5),
+            child: Icon(Icons.home),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top / 1.5),
+            child: Icon(Icons.book),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top / 1.5),
+            child: Icon(Icons.bar_chart),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top / 1.5),
+            child: Icon(Icons.person),
+          ),
+          label: '',
+        ),
+      ],
+      selectedItemColor: Color.fromARGB(255, 71, 172, 200),
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      elevation: 0,
+      iconSize: 20,
+      selectedFontSize: 0,
+      unselectedFontSize: 0,
     ),
-    label: '',
-  ),
-  BottomNavigationBarItem(
-    icon: Padding(
-      padding: EdgeInsets.only(top: 18),
-      child: Icon(Icons.book),
-    ),
-    label: '',
-  ),
-  BottomNavigationBarItem(
-    icon: Padding(
-      padding: EdgeInsets.only(top: 18),
-      child: Icon(Icons.bar_chart),
-    ),
-    label: '',
-  ),
-  BottomNavigationBarItem(
-    icon: Padding(
-      padding: EdgeInsets.only(top: 18),
-      child: Icon(Icons.person),
-    ),
-    label: '',
-  ),
-],
-  selectedItemColor: Color.fromARGB(255, 71, 172, 200),
-  unselectedItemColor: Colors.grey,
-  showSelectedLabels: false,
-  showUnselectedLabels: false,
-  elevation: 0,
-
-  // 🔥 IMPORTANT FIXES
-  iconSize: 20,
-  selectedFontSize: 0,
-  unselectedFontSize: 0,
-),
   ),
 ),
 
