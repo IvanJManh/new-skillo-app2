@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -36,3 +37,5 @@ class AuthService {
   }
 }
 
+=======
+>>>>>>> c0f5e256288cb22504cc39a620c4e626a7082336
