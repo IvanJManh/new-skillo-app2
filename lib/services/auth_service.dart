@@ -35,3 +35,4 @@ class AuthService {
     await _auth.sendPasswordResetEmail(email: email.trim());
   }
 }
+
