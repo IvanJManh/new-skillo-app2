@@ -155,7 +155,7 @@ class _SignInPageState extends State<SignInPage>{
               ),
               
 
-              const SizedBox(height: 190),
+              const SizedBox(height: 150),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

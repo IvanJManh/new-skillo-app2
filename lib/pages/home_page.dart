@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                         _currentIndex = 3;
                         _pageController.jumpToPage(3);
                       });
-                      (
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProfilePage(
