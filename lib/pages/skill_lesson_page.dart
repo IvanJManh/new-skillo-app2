@@ -79,10 +79,11 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
       'assets/videos/communication.mp4',
     )
       ..initialize().then((_) {
+        if (!mounted) return;
         setState(() {
           _isVideoReady = true;
         });
-      });    
+      });
   }
 
   @override
