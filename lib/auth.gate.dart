@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'pages/home_page.dart';
@@ -36,6 +35,3 @@ class AuthGate extends StatelessWidget {
     );
   }
 }
-
-=======
->>>>>>> c0f5e256288cb22504cc39a620c4e626a7082336
