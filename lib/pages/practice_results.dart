@@ -12,6 +12,7 @@ class PracticeResults {
   });
 
   double get overallScore => (postureScore + speechScore + facialScore) / 3;
+<<<<<<< HEAD
 
   Map<String, dynamic> toMap() {
     return {
@@ -31,3 +32,7 @@ class PracticeResults {
     );
   }
 }
+=======
+}
+
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5

@@ -190,6 +190,7 @@ class ProgressPage extends StatelessWidget {
   }
 
   Widget _performanceCard() {
+<<<<<<< HEAD
     final latest = skillNotifier.latestPracticeResult;
     
     List<Widget> feedbackWidgets = [];
@@ -201,6 +202,8 @@ class ProgressPage extends StatelessWidget {
       feedbackWidgets.add(Text(latest.facialScore >= 8 ? 'Facial Expression Good ✅' : 'Try to smile more!'));
     }
 
+=======
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       height: 170,
@@ -224,13 +227,20 @@ class ProgressPage extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
+<<<<<<< HEAD
           ...feedbackWidgets,
+=======
+          Text('Body Posture Good'),
+          Text('Speech Good'),
+          Text('Facial Expression Good'),
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
         ],
       ),
     );
   }
 
   Widget _learningProgressChart() {
+<<<<<<< HEAD
     final scores = skillNotifier.weeklyScores.reversed.toList();
     List<FlSpot> spots = [];
     if (scores.isEmpty) {
@@ -241,6 +251,8 @@ class ProgressPage extends StatelessWidget {
       }
     }
 
+=======
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
     return Container(
       padding: EdgeInsets.all(16),
       height: 220,
@@ -274,7 +286,18 @@ class ProgressPage extends StatelessWidget {
                 lineBarsData: [
                   LineChartBarData(
                     isCurved: true,
+<<<<<<< HEAD
                     spots: spots,
+=======
+                    spots: [
+                      FlSpot(0, 1),
+                      FlSpot(1, 2),
+                      FlSpot(2, 1.5),
+                      FlSpot(3, 3),
+                      FlSpot(4, 2.5),
+                      FlSpot(5, 3.8),
+                    ],
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
                     dotData: FlDotData(show: false),
                     belowBarData: BarAreaData(show: true),
                   ),

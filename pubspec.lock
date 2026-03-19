@@ -5,10 +5,17 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
+<<<<<<< HEAD
       sha256: afe15ce18a287d2f89da95566e62892df339b1936bbe9b83587df45b944ee72a
       url: "https://pub.dev"
     source: hosted
     version: "1.3.67"
+=======
+      sha256: cd83f7d6bd4e4c0b0b4fef802e8796784032e1cc23d7b0e982cf5d05d9bbe182
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.66"
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   async:
     dependency: transitive
     description:
@@ -81,6 +88,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+<<<<<<< HEAD
   cloud_firestore:
     dependency: "direct main"
     description:
@@ -105,6 +113,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.3"
+=======
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   collection:
     dependency: transitive
     description:
@@ -173,10 +183,17 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
+<<<<<<< HEAD
       sha256: f0997fee80fbb6d2c658c5b88ae87ba1f9506b5b37126db64fc2e75d8e977fbb
       url: "https://pub.dev"
     source: hosted
     version: "4.5.0"
+=======
+      sha256: "923085c881663ef685269b013e241b428e1fb03cdd0ebde265d9b40ff18abf80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.0"
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -189,10 +206,17 @@ packages:
     dependency: transitive
     description:
       name: firebase_core_web
+<<<<<<< HEAD
       sha256: "856ca92bf2d75a63761286ab8e791bda3a85184c2b641764433b619647acfca6"
       url: "https://pub.dev"
     source: hosted
     version: "3.5.0"
+=======
+      sha256: "83e7356c704131ca4d8d8dd57e360d8acecbca38b1a3705c7ae46cc34c708084"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   fl_chart:
     dependency: "direct main"
     description:
@@ -292,10 +316,17 @@ packages:
     dependency: transitive
     description:
       name: matcher
+<<<<<<< HEAD
       sha256: "12956d0ad8390bbcc63ca2e1469c0619946ccb52809807067a7020d57e647aa6"
       url: "https://pub.dev"
     source: hosted
     version: "0.12.18"
+=======
+      sha256: dc0b7dc7651697ea4ff3e69ef44b0407ea32c487a39fff6a4004fa585e901861
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.19"
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   material_color_utilities:
     dependency: transitive
     description:
@@ -385,10 +416,17 @@ packages:
     dependency: transitive
     description:
       name: test_api
+<<<<<<< HEAD
       sha256: "93167629bfc610f71560ab9312acdda4959de4df6fac7492c89ff0d3886f6636"
       url: "https://pub.dev"
     source: hosted
     version: "0.7.9"
+=======
+      sha256: "8161c84903fd860b26bfdefb7963b3f0b68fee7adea0f59ef805ecca346f0c7a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
+>>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
   typed_data:
     dependency: transitive
     description:
