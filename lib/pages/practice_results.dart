@@ -27,7 +27,6 @@ class PracticeResults {
 
   factory PracticeResults.fromMap(Map<String, dynamic> map) {
     return PracticeResults(
-<<<<<<< HEAD
       date: DateTime.parse(map['date'] as String),
       postureScore: (map['postureScore'] as num).toDouble(),
       speechScore: (map['speechScore'] as num).toDouble(),
@@ -36,14 +35,3 @@ class PracticeResults {
     );
   }
 }
-=======
-      date: DateTime.parse(map['date']),
-      postureScore: (map['postureScore'] as num).toDouble(),
-      speechScore: (map['speechScore'] as num).toDouble(),
-      facialScore: (map['facialScore'] as num).toDouble(),
-      aiFeedback: map['aiFeedback'],
-    );
-  }
-}
-
->>>>>>> master

@@ -123,11 +123,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           HomeContent(skillNotifier: widget.skillNotifier),
           SavedSkillsPage(skillNotifier: widget.skillNotifier),
-<<<<<<< HEAD
           ProgressPage(skillNotifier: widget.skillNotifier, totalSkills: 4),
-=======
-          ProgressPage(skillNotifier: widget.skillNotifier, totalSkills: 10),
->>>>>>> master
           ProfilePage(userName: widget.userName, userEmail: widget.userEmail),
         ],
       ),
@@ -249,11 +245,7 @@ class HomeContent extends StatelessWidget {
                               Text(
                                 index == 0
                                     ? " Today's 2 minute Skill"
-<<<<<<< HEAD
-                                    : " Current Streak",
-=======
                                     : " Current Streak: ${skillNotifier.streak} Days",
->>>>>>> master
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 17,

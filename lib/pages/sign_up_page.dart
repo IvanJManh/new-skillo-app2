@@ -23,10 +23,7 @@ class _SignUpPageState extends State<SignUpPage>{
   final _emailController =TextEditingController();
   bool _isLoading = false;
   String? _errorText;
-<<<<<<< HEAD
-=======
-  SkillNotifier skillNotifier = SkillNotifier();
->>>>>>> master
+
 
   void _checkPassword(){
     if (_passwordController.text != _confirmPasswordController.text){

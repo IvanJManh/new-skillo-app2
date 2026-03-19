@@ -86,11 +86,7 @@ class ProgressPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-<<<<<<< HEAD
                 'Skills\nCompleted\n$completed/$totalSkills',
-=======
-                'Skills\nCompleted\n${skillNotifier.value.length}',
->>>>>>> master
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -194,13 +190,7 @@ class ProgressPage extends StatelessWidget {
   }
 
   Widget _performanceCard() {
-<<<<<<< HEAD
     final latestResult = skillNotifier.latestPracticeResult;
-=======
-    final latestResult = skillNotifier.practiceResults.isNotEmpty 
-        ? skillNotifier.practiceResults.first 
-        : null;
->>>>>>> master
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -275,17 +265,12 @@ class ProgressPage extends StatelessWidget {
           SizedBox(height: 10),
           Expanded(
             child: scores.isEmpty
-<<<<<<< HEAD
                 ? Center(
                     child: Text(
                       'Start practicing to see progress!',
                       style: TextStyle(color: Colors.black),
                     ),
                   )
-=======
-                ? Center(child: Text('Start practicing to see progress!',
-                style: TextStyle(color: Colors.black)))
->>>>>>> master
                 : LineChart(
                     LineChartData(
                       borderData: FlBorderData(show: false),
@@ -327,5 +312,3 @@ class ProgressPage extends StatelessWidget {
 extension ListExtension on List<double> {
   double get max => isEmpty ? 0 : reduce((a, b) => a > b ? a : b);
 }
-
-
