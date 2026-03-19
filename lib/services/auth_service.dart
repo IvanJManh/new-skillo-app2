@@ -34,7 +34,6 @@ class AuthService {
   Future<void> resetPassword({required String email}) async {
     await _auth.sendPasswordResetEmail(email: email.trim());
   }
-<<<<<<< HEAD
 
   static String handleFirebaseAuthError(FirebaseAuthException e) {
     switch (e.code) {
@@ -58,6 +57,4 @@ class AuthService {
         return e.message ?? 'An unexpected error occurred. Please try again.';
     }
   }
-=======
->>>>>>> c35c16757c3340e41072186f3d56103199a2d013
 }
