@@ -3,16 +3,17 @@ class PracticeResults {
   final double postureScore;
   final double speechScore;
   final double facialScore;
+  final String? aiFeedback;
 
   PracticeResults({
     required this.date,
     required this.postureScore,
     required this.speechScore,
     required this.facialScore,
+    this.aiFeedback,
   });
 
   double get overallScore => (postureScore + speechScore + facialScore) / 3;
-<<<<<<< HEAD
 
   Map<String, dynamic> toMap() {
     return {
@@ -20,6 +21,7 @@ class PracticeResults {
       'postureScore': postureScore,
       'speechScore': speechScore,
       'facialScore': facialScore,
+      'aiFeedback': aiFeedback,
     };
   }
 
@@ -29,10 +31,7 @@ class PracticeResults {
       postureScore: (map['postureScore'] as num).toDouble(),
       speechScore: (map['speechScore'] as num).toDouble(),
       facialScore: (map['facialScore'] as num).toDouble(),
+      aiFeedback: map['aiFeedback'] as String?,
     );
   }
 }
-=======
-}
-
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5

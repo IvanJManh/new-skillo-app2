@@ -23,11 +23,7 @@ class AuthGate extends StatelessWidget {
         if (snapshot.hasData) {
           final user = snapshot.data!;
           return HomePage(
-<<<<<<< HEAD
             skillNotifier: SkillNotifier(userId: user.uid),
-=======
-            skillNotifier: SkillNotifier(),
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
             userName: user.displayName ?? "User",
             userEmail: user.email ?? "",
           );

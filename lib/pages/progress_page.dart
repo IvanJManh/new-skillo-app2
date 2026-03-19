@@ -190,20 +190,8 @@ class ProgressPage extends StatelessWidget {
   }
 
   Widget _performanceCard() {
-<<<<<<< HEAD
-    final latest = skillNotifier.latestPracticeResult;
-    
-    List<Widget> feedbackWidgets = [];
-    if (latest == null) {
-      feedbackWidgets.add(Text('There is no performance feedback yet.'));
-    } else {
-      feedbackWidgets.add(Text(latest.postureScore >= 8 ? 'Good posture ✅' : 'Keep your shoulders straight'));
-      feedbackWidgets.add(Text(latest.speechScore >= 8 ? 'Speech Clear ✅' : 'Speak louder and clearer'));
-      feedbackWidgets.add(Text(latest.facialScore >= 8 ? 'Facial Expression Good ✅' : 'Try to smile more!'));
-    }
+    final latestResult = skillNotifier.latestPracticeResult;
 
-=======
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       height: 170,
@@ -227,32 +215,29 @@ class ProgressPage extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
-<<<<<<< HEAD
-          ...feedbackWidgets,
-=======
-          Text('Body Posture Good'),
-          Text('Speech Good'),
-          Text('Facial Expression Good'),
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
+          Expanded(
+            child: latestResult?.aiFeedback != null && latestResult!.aiFeedback!.isNotEmpty
+                ? SingleChildScrollView(
+                    child: Text(
+                      latestResult!.aiFeedback!,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      'No AI feedbacks yet',
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ),
+          ),
         ],
       ),
     );
   }
 
   Widget _learningProgressChart() {
-<<<<<<< HEAD
     final scores = skillNotifier.weeklyScores.reversed.toList();
-    List<FlSpot> spots = [];
-    if (scores.isEmpty) {
-      spots = [FlSpot(0, 0)];
-    } else {
-      for (int i = 0; i < scores.length; i++) {
-        spots.add(FlSpot(i.toDouble(), scores[i]));
-      }
-    }
-
-=======
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
+    
     return Container(
       padding: EdgeInsets.all(16),
       height: 220,
@@ -277,33 +262,46 @@ class ProgressPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          SizedBox(height: 10),
           Expanded(
-            child: LineChart(
-              LineChartData(
-                borderData: FlBorderData(show: false),
-                gridData: FlGridData(show: false),
-                titlesData: FlTitlesData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    isCurved: true,
-<<<<<<< HEAD
-                    spots: spots,
-=======
-                    spots: [
-                      FlSpot(0, 1),
-                      FlSpot(1, 2),
-                      FlSpot(2, 1.5),
-                      FlSpot(3, 3),
-                      FlSpot(4, 2.5),
-                      FlSpot(5, 3.8),
-                    ],
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
-                    dotData: FlDotData(show: false),
-                    belowBarData: BarAreaData(show: true),
+            child: scores.isEmpty
+                ? Center(
+                    child: Text(
+                      'Start practicing to see progress!',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                : LineChart(
+                    LineChartData(
+                      borderData: FlBorderData(show: false),
+                      gridData: FlGridData(show: false),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          isCurved: true,
+                          color: Color.fromARGB(255, 71, 172, 200),
+                          barWidth: 3,
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(show: true),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            color: Color.fromARGB(255, 71, 172, 200).withOpacity(0.2),
+                          ),
+                          spots: scores.asMap().entries.map((entry) {
+                            return FlSpot(entry.key.toDouble(), entry.value);
+                          }).toList(),
+                        ),
+                      ],
+                      minY: 0,
+                      maxY: 10, // Assuming score is out of 10
+                    ),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
       ),

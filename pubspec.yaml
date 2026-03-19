@@ -19,10 +19,7 @@ dependencies:
   fl_chart: ^1.1.1
   video_player: ^2.9.1
   google_mlkit_commons: ^0.7.1
-<<<<<<< HEAD
   cloud_firestore: ^6.1.3
-=======
->>>>>>> c688dd92d791e34e91c4d3e7540ee94cb6b5fed5
 
 
 
