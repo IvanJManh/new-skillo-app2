@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+import 'package:firebase_auth/firebase_auth.dart';
+=======
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
 import 'package:newskilloapp/pages/home_page.dart';
 import 'package:newskilloapp/pages/sign_up_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
@@ -20,6 +24,8 @@ class _SignInPageState extends State<SignInPage>{
   String? _errorText;
   SkillNotifier skillNotifier = SkillNotifier();
 
+<<<<<<< HEAD
+=======
   void _checkPassword(){
     if(_passwordController.text != _passwordController.text){
       setState(() {
@@ -46,6 +52,7 @@ class _SignInPageState extends State<SignInPage>{
   }
   
 
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +101,10 @@ class _SignInPageState extends State<SignInPage>{
             children: [
               const SizedBox(height: 20),
               TextField(
+<<<<<<< HEAD
+=======
                 onChanged: (value) => _checkEmail(),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Enter your email',
@@ -107,7 +117,10 @@ class _SignInPageState extends State<SignInPage>{
               const SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
+<<<<<<< HEAD
+=======
                 onChanged: (value) => _checkPassword(),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Enter your password',
@@ -136,7 +149,11 @@ class _SignInPageState extends State<SignInPage>{
               SizedBox(width: double.infinity,
               height: 45,
               child: ElevatedButton(
+<<<<<<< HEAD
+                  onPressed: _isLoading ? null : () async{
+=======
                   onPressed: (_errorText != null || _isLoading) ? null : () async{
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                     setState(() {
                       _isLoading = true;
                     });
@@ -152,10 +169,26 @@ class _SignInPageState extends State<SignInPage>{
                           (route) => false
                         );
                       }
+<<<<<<< HEAD
+                    } on FirebaseAuthException catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AuthService.handleFirebaseAuthError(e)),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("An unexpected error occurred.")),
+=======
                     } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Sign in failed: $e")),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                         );
                       }
                     } finally {
