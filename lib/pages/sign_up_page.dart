@@ -238,7 +238,7 @@ class _SignUpPageState extends State<SignUpPage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Do have an account? "),
+                    const Text("Already have an account? "),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
