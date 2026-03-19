@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:firebase_auth/firebase_auth.dart';
+=======
+//import 'package:firebase_auth/firebase_auth.dart';
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
 import 'package:newskilloapp/pages/sign_in_page.dart';
 import 'package:newskilloapp/pages/home_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
@@ -13,14 +17,24 @@ class SignUpPage extends StatefulWidget {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
+<<<<<<< HEAD
+=======
+final _nameController = TextEditingController();
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
 
 class _SignUpPageState extends State<SignUpPage>{
   //final FirebaseAuth _auth = FirebaseAuth.instance;
   final _auth = AuthService();
+<<<<<<< HEAD
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _emailController = TextEditingController();
+=======
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _emailController =TextEditingController();
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
   bool _isLoading = false;
   String? _errorText;
   SkillNotifier skillNotifier = SkillNotifier();
@@ -38,6 +52,7 @@ class _SignUpPageState extends State<SignUpPage>{
     }
   }
 
+<<<<<<< HEAD
   @override
   void dispose() {
     _nameController.dispose();
@@ -47,6 +62,8 @@ class _SignUpPageState extends State<SignUpPage>{
     super.dispose();
   }
 
+=======
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
   /*Future<void> _signUp() async{
     try{
       await _auth.createUserWithEmailAndPassword(
@@ -189,6 +206,7 @@ class _SignUpPageState extends State<SignUpPage>{
                           (route) => false
                         );
                       }
+<<<<<<< HEAD
                     } on FirebaseAuthException catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -202,6 +220,12 @@ class _SignUpPageState extends State<SignUpPage>{
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("An unexpected error occurred.")),
+=======
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Sign up failed: $e")),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                         );
                       }
                     } finally {
@@ -238,7 +262,11 @@ class _SignUpPageState extends State<SignUpPage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+<<<<<<< HEAD
                     const Text("Already have an account? "),
+=======
+                    const Text("Do have an account? "),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

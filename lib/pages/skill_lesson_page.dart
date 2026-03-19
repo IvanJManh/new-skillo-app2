@@ -1,4 +1,5 @@
 import 'dart:math';
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
@@ -8,12 +9,22 @@ class SkillLessonPage extends StatefulWidget {
   final Map<String, dynamic>? initialSkill;
 
   const SkillLessonPage({super.key, this.initialSkill});
+=======
+
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import 'package:newskilloapp/pages/pose_camera_screen.dart';
+
+class SkillLessonPage extends StatefulWidget {
+  const SkillLessonPage({super.key});
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
 
   @override
   State<SkillLessonPage> createState() => _SkillLessonPageState();
 }
 
 class _SkillLessonPageState extends State<SkillLessonPage> {
+<<<<<<< HEAD
   final FirestoreService _firestoreService = FirestoreService();
   Map<String, dynamic>? selectedSkill;
   List<Map<String, dynamic>> _lessons = [];
@@ -25,6 +36,14 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   bool _canGoNext = false;
 
   final List<Map<String, dynamic>> fallbackSkills = [
+=======
+  late final Map<String, String> selectedSkill;
+
+  late VideoPlayerController _videoController;
+  bool _isVideoReady = false;
+
+  final List<Map<String, String>> skills = [
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
     {
       'title': 'Improve Communication',
       'description':
@@ -80,6 +99,7 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     _loadInitialData();
   }
 
@@ -198,17 +218,35 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
         ),
       );
     }
+=======
+    selectedSkill = skills[Random().nextInt(skills.length)];
+
+    _videoController = VideoPlayerController.asset(
+      'assets/videos/communication.mp4',
+    )
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() {
+          _isVideoReady = true;
+        });
+      });
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
   }
 
   @override
   void dispose() {
+<<<<<<< HEAD
     _videoController?.removeListener(_videoListener);
     _videoController?.dispose();
+=======
+    _videoController.dispose();
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     if (_loading) {
       return Scaffold(
         appBar: AppBar(title: const Text('Today\'s Skill')),
@@ -221,12 +259,18 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedSkill?['title'] ?? 'Skill Lesson'),
+=======
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Today\'s Skill'),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+<<<<<<< HEAD
             // Progress tracker
             Row(
               children: [
@@ -248,23 +292,36 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
               ],
             ),
             const SizedBox(height: 16),
+=======
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
             Container(
               width: double.infinity,
               height: 220,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
+<<<<<<< HEAD
                 color: Colors.black12,
+=======
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
               ),
               child: _isVideoReady
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(16),
+<<<<<<< HEAD
                       child: VideoPlayer(_videoController!),
+=======
+                      child: VideoPlayer(_videoController),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                     )
                   : const Center(child: CircularProgressIndicator()),
             ),
             const SizedBox(height: 24),
             Text(
+<<<<<<< HEAD
               currentLesson['title'] ?? selectedSkill?['title'] ?? 'Skill Title',
+=======
+              selectedSkill['title']!,
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -272,20 +329,43 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
             ),
             const SizedBox(height: 12),
             Text(
+<<<<<<< HEAD
               currentLesson['description'] ??
                   selectedSkill?['description'] ??
                   'No description available.',
+=======
+              selectedSkill['description']!,
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
               style: const TextStyle(
                 fontSize: 16,
                 height: 1.5,
               ),
             ),
+<<<<<<< HEAD
+=======
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 240, 248, 250),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color.fromARGB(255, 71, 172, 200),
+                ),
+              ),
+              child: const Text(
+                'Video lesson area\n\nYou can add the actual lesson video here next.',
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
             const Spacer(),
             SizedBox(
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
                   backgroundColor: _canGoNext
                       ? const Color.fromARGB(255, 71, 172, 200)
                       : Colors.grey,
@@ -297,6 +377,22 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
                       ? 'Next Lesson'
                       : 'Start AI Practice',
                   style: const TextStyle(fontSize: 16),
+=======
+                  backgroundColor: const Color.fromARGB(255, 71, 172, 200),
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PoseCameraScreen(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Start AI Practice',
+                  style: TextStyle(fontSize: 16),
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                 ),
               ),
             ),

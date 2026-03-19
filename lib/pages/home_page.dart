@@ -306,6 +306,7 @@ class HomeContent extends StatelessWidget {
                           itemCount: skills.length,
                           itemBuilder: (context, index) {
                             final skill = skills[index];
+<<<<<<< HEAD
                             return InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -317,6 +318,10 @@ class HomeContent extends StatelessWidget {
                                   ),
                                 );
                               },
+=======
+                            return Container(
+                              width: 140,
+>>>>>>> c35c16757c3340e41072186f3d56103199a2d013
                               child: Container(
                                 width: 140,
                                 margin: EdgeInsets.only(right: 5),
