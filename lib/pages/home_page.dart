@@ -306,8 +306,17 @@ class HomeContent extends StatelessWidget {
                           itemCount: skills.length,
                           itemBuilder: (context, index) {
                             final skill = skills[index];
-                            return Container(
-                              width: 140,
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SkillLessonPage(
+                                      initialSkill: {'title': skill},
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Container(
                                 width: 140,
                                 margin: EdgeInsets.only(right: 5),

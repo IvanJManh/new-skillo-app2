@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/pages/skill_lesson_page.dart';
 
 
 class SavedSkillsPage extends StatefulWidget {
@@ -127,77 +128,93 @@ class _SavedSkillsPageState extends State<SavedSkillsPage>{
               itemCount: filteredSkills.length,
               itemBuilder: (context, index) {
                 final skill = filteredSkills[index];
-                return Card(
-                  elevation: 0.7,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(10),
-                    side: BorderSide(
-                      color: Color.fromARGB(255, 71, 172, 200),
-                      width: 1,
-                    )
-                  ),
-                  child: Container(
-                    height: 150,
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        if (index% 2 == 0)
-                        Image.asset('lib/images/man.png',
-                        width: 155,
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SkillLessonPage(
+                          initialSkill: {'title': skill},
                         ),
-                        SizedBox(width: 10),
-                        Expanded(child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              skill,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 0.7,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
+                        color: Color.fromARGB(255, 71, 172, 200),
+                        width: 1,
+                      ),
+                    ),
+                    child: Container(
+                      height: 150,
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          if (index % 2 == 0)
+                            Image.asset(
+                              'lib/images/man.png',
+                              width: 155,
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Practice and improve this skill',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            )
-                          ],
-                        ),
-                        ),
-                        SizedBox(width: 10),
-                        if (index% 2 != 0)
-                        Image.asset('lib/images/man.png',
-                        width: 155,
-                        ),
-            
-                        Center(
-                          child: SizedBox(width: 30,
-                            child: IconButton(
-                              icon: Icon(
-                              widget.skillNotifier.value.contains(skill)
-                            ? Icons.bookmark : Icons.bookmark_border,  
-                            ),
-                            onPressed: (){
-                              if (widget.skillNotifier.value.contains(skill)){
-                              widget.skillNotifier.removeSkill(skill);
-                            } else {
-                              widget.skillNotifier.addSkill(skill);
-                            }
-                            },
-                            style: IconButton.styleFrom(
-                              splashFactory: NoSplash.splashFactory,
-                            ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  skill,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Practice and improve this skill',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 10),
+                          if (index % 2 != 0)
+                            Image.asset(
+                              'lib/images/man.png',
+                              width: 155,
+                            ),
+                          Center(
+                            child: SizedBox(
+                              width: 30,
+                              child: IconButton(
+                                icon: Icon(
+                                  widget.skillNotifier.value.contains(skill)
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                ),
+                                onPressed: () {
+                                  if (widget.skillNotifier.value.contains(skill)) {
+                                    widget.skillNotifier.removeSkill(skill);
+                                  } else {
+                                    widget.skillNotifier.addSkill(skill);
+                                  }
+                                },
+                                style: IconButton.styleFrom(
+                                  splashFactory: NoSplash.splashFactory,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
