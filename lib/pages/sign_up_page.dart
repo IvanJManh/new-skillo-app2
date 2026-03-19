@@ -13,14 +13,14 @@ class SignUpPage extends StatefulWidget {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
-final _nameController = TextEditingController();
 
 class _SignUpPageState extends State<SignUpPage>{
   //final FirebaseAuth _auth = FirebaseAuth.instance;
   final _auth = AuthService();
+  final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _emailController =TextEditingController();
+  final _emailController = TextEditingController();
   bool _isLoading = false;
   String? _errorText;
   SkillNotifier skillNotifier = SkillNotifier();
@@ -36,6 +36,15 @@ class _SignUpPageState extends State<SignUpPage>{
         _errorText = null;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 
   /*Future<void> _signUp() async{
@@ -180,10 +189,19 @@ class _SignUpPageState extends State<SignUpPage>{
                           (route) => false
                         );
                       }
+                    } on FirebaseAuthException catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AuthService.handleFirebaseAuthError(e)),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
                     } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Sign up failed: $e")),
+                          SnackBar(content: Text("An unexpected error occurred.")),
                         );
                       }
                     } finally {

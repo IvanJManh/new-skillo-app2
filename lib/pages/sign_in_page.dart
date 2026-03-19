@@ -20,32 +20,6 @@ class _SignInPageState extends State<SignInPage>{
   String? _errorText;
   SkillNotifier skillNotifier = SkillNotifier();
 
-  void _checkPassword(){
-    if(_passwordController.text != _passwordController.text){
-      setState(() {
-        _errorText = 'Passwords is incorrect';
-      });
-   
-    }else{
-      setState(() {
-        _errorText = null;
-      });
-    }
-  }
-  void _checkEmail(){
-    if(_emailController.text != _emailController.text){
-      setState(() {
-        _errorText = 'Email is not found';
-      });
-    }
-    else{
-      setState(() {
-        _errorText = null;
-      });
-    }
-  }
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +68,6 @@ class _SignInPageState extends State<SignInPage>{
             children: [
               const SizedBox(height: 20),
               TextField(
-                onChanged: (value) => _checkEmail(),
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Enter your email',
@@ -107,7 +80,6 @@ class _SignInPageState extends State<SignInPage>{
               const SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
-                onChanged: (value) => _checkPassword(),
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Enter your password',
@@ -136,7 +108,7 @@ class _SignInPageState extends State<SignInPage>{
               SizedBox(width: double.infinity,
               height: 45,
               child: ElevatedButton(
-                  onPressed: (_errorText != null || _isLoading) ? null : () async{
+                  onPressed: _isLoading ? null : () async{
                     setState(() {
                       _isLoading = true;
                     });
@@ -152,10 +124,19 @@ class _SignInPageState extends State<SignInPage>{
                           (route) => false
                         );
                       }
+                    } on FirebaseAuthException catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AuthService.handleFirebaseAuthError(e)),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
                     } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Sign in failed: $e")),
+                          SnackBar(content: Text("An unexpected error occurred.")),
                         );
                       }
                     } finally {
