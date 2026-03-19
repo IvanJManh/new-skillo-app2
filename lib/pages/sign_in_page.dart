@@ -18,6 +18,10 @@ class _SignInPageState extends State<SignInPage>{
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorText;
+<<<<<<< HEAD
+=======
+  SkillNotifier skillNotifier = SkillNotifier();
+>>>>>>> master
 
   void _checkPassword(){
     if(_passwordController.text != _passwordController.text){
