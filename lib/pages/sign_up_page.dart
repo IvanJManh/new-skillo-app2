@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newskilloapp/pages/sign_in_page.dart';
 import 'package:newskilloapp/pages/home_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
