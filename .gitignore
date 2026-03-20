@@ -1,6 +1,7 @@
 .dart_tool/
 build/
 .idea/
+.vscode/
 android/.gradle/
 android/local.properties
 ios/Flutter/Generated.xcconfig
@@ -11,3 +12,7 @@ macos/Pods/
 macos/Runner.xcworkspace/
 windows/flutter/ephemeral/
 .flutter-plugins-dependencies
+node_modules/
+*.log
+*.lock
+.env

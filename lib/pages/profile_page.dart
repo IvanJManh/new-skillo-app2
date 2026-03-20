@@ -136,10 +136,6 @@ class _ProfilePageState extends State<ProfilePage> {
             title: Text('Email'),
             subtitle: Text(widget.userEmail),
           ),
-          ListTile(
-            title: Text('Phone'),
-            subtitle: Text('+7767566562'),
-          ),
         ],
       ),
     );

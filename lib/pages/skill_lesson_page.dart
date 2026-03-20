@@ -87,6 +87,7 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
     if (!mounted) return;
     setState(() => _loading = true);
 
+    final String? initialTitle = widget.initialSkill?['title'];
     Map<String, dynamic>? skill = widget.initialSkill;
 
     // Fetch all skills to find the full data if needed or to pick a random one
@@ -117,6 +118,11 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
 
     selectedSkill = skill;
 
+    if (initialTitle != null && selectedSkill != null) {
+      selectedSkill = Map<String, dynamic>.from(selectedSkill!);
+      selectedSkill!['title'] = initialTitle;
+    }
+
     if (selectedSkill != null && selectedSkill!['id'] != null) {
       _lessons = await _firestoreService.getLessons(selectedSkill!['id']);
     }
@@ -143,8 +149,8 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
     if (_lessons.isEmpty) return;
 
     final lesson = _lessons[_currentLessonIndex];
-    final String videoSource =
-        lesson['videoUrl'] ?? 'assets/videos/communication.mp4';
+    final String rawUrl = lesson['videoUrl']?.toString() ?? '';
+    final String videoSource = rawUrl.isNotEmpty ? rawUrl : 'assets/videos/communication.mp4';
     final bool isAsset = lesson['isAsset'] ?? videoSource.startsWith('assets/');
 
     _isVideoReady = false;

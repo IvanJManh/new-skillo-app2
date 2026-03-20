@@ -9,8 +9,8 @@ class SavedSkillsPage extends StatefulWidget {
   final List<String> skillsList = [
     'Improve Communication',
     'Facial Expressions',
-    'Public Speaking',
-    'Time Management',
+    'Writing skills',
+    'Postures and gestures',
   ];
 
   double calculateProgress(int completed, int total) {
