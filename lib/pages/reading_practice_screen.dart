@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/pages/practice_results.dart';
 
 class ReadingPracticeScreen extends StatefulWidget {
   final SkillNotifier? skillNotifier;
@@ -25,6 +26,7 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
   bool _isChecking = false;
   String _statusText = 'Type your sentence and check grammar';
   List<dynamic> _grammarErrors = [];
+  double _grammarScore = 0.0;
 
   @override
   void initState() {
@@ -93,6 +95,8 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
 
         setState(() {
           _grammarErrors = matches;
+          // Score = 10 for 0 errors, reduce by 2 per error down to 0
+          _grammarScore = (10.0 - matches.length * 2).clamp(0.0, 10.0);
           if (matches.isEmpty) {
             _statusText = 'Perfect! No errors found ✅';
           } else {
@@ -109,7 +113,26 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
     }
   }
 
-  void _finishPractice() {
+  Future<void> _finishPractice() async {
+    // Save results to Firebase
+    if (widget.skillNotifier != null && _grammarScore > 0) {
+      try {
+        final errorSummary = _grammarErrors.isEmpty
+            ? 'No grammar errors found.'
+            : '${_grammarErrors.length} grammar error(s) found.';
+        await widget.skillNotifier!.addPracticeResults(
+          PracticeResults(
+            date: DateTime.now(),
+            postureScore: 0.0,
+            speechScore: _grammarScore,
+            facialScore: 0.0,
+            aiFeedback: 'Writing score: ${_grammarScore.toStringAsFixed(1)}/10 — $errorSummary',
+          ),
+        );
+      } catch (_) {}
+    }
+    await _controller?.dispose();
+    _controller = null;
     if (mounted) {
       Navigator.pop(context);
     }

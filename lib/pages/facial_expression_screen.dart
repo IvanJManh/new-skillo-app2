@@ -6,38 +6,38 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
-import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:newskilloapp/pages/skill_notifier.dart';
 import 'package:newskilloapp/pages/practice_results.dart';
 
-class PoseCameraScreen extends StatefulWidget {
+class FacialExpressionScreen extends StatefulWidget {
   final SkillNotifier? skillNotifier;
   final String skillTitle;
 
-  const PoseCameraScreen({super.key, this.skillNotifier, this.skillTitle = 'Skill'});
+  const FacialExpressionScreen({super.key, this.skillNotifier, this.skillTitle = 'Skill'});
 
   @override
-  State<PoseCameraScreen> createState() => _PoseCameraScreenState();
+  State<FacialExpressionScreen> createState() => _FacialExpressionScreenState();
 }
 
-class _PoseCameraScreenState extends State<PoseCameraScreen> {
+class _FacialExpressionScreenState extends State<FacialExpressionScreen> {
   CameraController? _controller;
-  late final PoseDetector _poseDetector;
+  late final FaceDetector _faceDetector;
 
   bool _isProcessing = false;
   String _statusText = 'AI feedback running.....';
-  int _goodPostureCount = 0;
-  int _totalFrames = 0;
-  bool _practiceStarted = false;
+  int _smileCount = 0;
+  int _totalFaceFrames = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _poseDetector = PoseDetector(
-      options: PoseDetectorOptions(
-        mode: PoseDetectionMode.stream,
+    _faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableClassification: true, // Needed for smiling and eye open probabilities
+        enableTracking: true,
       ),
     );
 
@@ -78,8 +78,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
       print('DEBUG: Camera initialized');
 
       setState(() {
-        _statusText = 'Posture check active';
-        _practiceStarted = true;
+        _statusText = 'Expression check active';
       });
 
       // startImageStream is only supported on mobile platforms
@@ -121,41 +120,33 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
         _controller!.description,
       );
 
-      final poses = await _poseDetector.processImage(inputImage);
+      final faces = await _faceDetector.processImage(inputImage);
 
       if (!mounted) return;
 
       setState(() {
-        if (poses.isEmpty) {
-          _statusText = 'Stand in front of the camera';
+        _totalFaceFrames++;
+        if (faces.isEmpty) {
+          _statusText = 'Position face in camera';
           return;
         }
 
-        final pose = poses.first;
+        final face = faces.first;
 
-        final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
-        final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
-        final nose = pose.landmarks[PoseLandmarkType.nose];
-
-        if (leftShoulder == null || rightShoulder == null || nose == null) {
-          _statusText = 'Hold still for posture check';
-          return;
-        }
-
-        _totalFrames++;
-        final shoulderDiff = (leftShoulder.y - rightShoulder.y).abs();
-
-        if (shoulderDiff < 25) {
-          _statusText = 'Good posture ✅';
-          _goodPostureCount++;
+        if (face.smilingProbability != null && face.smilingProbability! > 0.5) {
+          _statusText = 'Great smile! 😊 Keep it up!';
+          _smileCount++;
+        } else if (face.leftEyeOpenProbability != null && face.leftEyeOpenProbability! < 0.2 &&
+                   face.rightEyeOpenProbability != null && face.rightEyeOpenProbability! < 0.2) {
+          _statusText = 'Are your eyes closed? 😴 Wake up!';
         } else {
-          _statusText = 'Keep your shoulders straight';
+          _statusText = 'Looking a bit serious. Let\'s see a smile! 🙂';
         }
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _statusText = 'Unable to read posture';
+        _statusText = 'Unable to read expression';
       });
     } finally {
       _isProcessing = false;
@@ -205,7 +196,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
   @override
   void dispose() {
     _controller?.dispose();
-    _poseDetector.close();
+    _faceDetector.close();
     super.dispose();
   }
 
@@ -239,7 +230,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pose Camera'),
+        title: Text(widget.skillTitle),
       ),
       body: Stack(
         children: [
@@ -253,17 +244,17 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               decoration: BoxDecoration(
-                color: _statusText.contains('Good') 
+                color: _statusText.contains('smile') 
                     ? Colors.green.withOpacity(0.85) 
-                    : _statusText.contains('straight') || _statusText.contains('Hold still')
+                    : _statusText.contains('serious') || _statusText.contains('Position face')
                         ? Colors.orange.withOpacity(0.85)
                         : Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
@@ -271,11 +262,13 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    _statusText.contains('Good') 
-                        ? Icons.check_circle_outline 
-                        : _statusText.contains('straight')
-                            ? Icons.warning_amber_rounded
-                            : Icons.info_outline,
+                    _statusText.contains('smile') 
+                        ? Icons.mood 
+                        : _statusText.contains('serious')
+                            ? Icons.sentiment_neutral
+                            : _statusText.contains('Position') 
+                                ? Icons.face
+                                : Icons.info_outline,
                     color: Colors.white,
                     size: 28,
                   ),
@@ -318,9 +311,9 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
   }
 
   Future<void> _finishPractice() async {
-    // Compute posture score (0–10)
-    final double postureScore = _totalFrames > 0
-        ? (_goodPostureCount / _totalFrames * 10).clamp(0, 10)
+    // Compute facial score (0–10) based on smile ratio
+    final double facialScore = _totalFaceFrames > 0
+        ? (_smileCount / _totalFaceFrames * 10).clamp(0, 10)
         : 0.0;
 
     // Save results to Firebase if we have a notifier
@@ -329,10 +322,10 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
         await widget.skillNotifier!.addPracticeResults(
           PracticeResults(
             date: DateTime.now(),
-            postureScore: postureScore,
+            postureScore: 0.0,
             speechScore: 0.0,
-            facialScore: 0.0,
-            aiFeedback: 'Posture score: ${postureScore.toStringAsFixed(1)}/10 — Good posture: $_goodPostureCount out of $_totalFrames frames.',
+            facialScore: facialScore,
+            aiFeedback: 'Expression score: ${facialScore.toStringAsFixed(1)}/10 — Smiles detected: $_smileCount out of $_totalFaceFrames frames.',
           ),
         );
       } catch (_) {}
@@ -343,7 +336,7 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     }
     await _controller?.dispose();
     _controller = null;
-    _poseDetector.close();
+    _faceDetector.close();
     if (mounted) {
       Navigator.pop(context);
     }

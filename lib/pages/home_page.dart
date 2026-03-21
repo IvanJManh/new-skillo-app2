@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/profile_page.dart';
 import 'package:newskilloapp/pages/progress_page.dart';
@@ -205,10 +206,19 @@ class HomeContent extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         if (index == 0) {
+                          final List<String> dailySkills = [
+                            'Writing Skills',
+                            'Postures and Gestures',
+                            'Speaking',
+                            'Facial Expression',
+                          ];
+                          final randomSkill = dailySkills[Random().nextInt(dailySkills.length)];
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => SkillLessonPage(
+                                initialSkill: {'title': randomSkill},
                                 skillNotifier: skillNotifier,
                               ),
                             ),

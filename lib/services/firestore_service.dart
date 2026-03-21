@@ -77,7 +77,7 @@ class FirestoreService {
     return null;
   }
 
-  Future<List<Map<String, dynamic>>> getLessons(String skillId) async {
+  Future<List<Map<String, dynamic>>> getLessonsForSkill(String skillId) async {
     final snapshot = await _db
         .collection('skills')
         .doc(skillId)

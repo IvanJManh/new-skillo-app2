@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
 import 'package:newskilloapp/pages/reading_practice_screen.dart';
+import 'package:newskilloapp/pages/speaking_practice_screen.dart';
+import 'package:newskilloapp/pages/facial_expression_screen.dart';
 import 'package:newskilloapp/services/firestore_service.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
 
@@ -28,26 +30,26 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   bool _canGoNext = false;
 
   String _getVideoForSkill(String? title) {
-    if (title == null) return 'assets/videos/communication.mp4';
+    if (title == null || title.isEmpty) return 'assets/videos/speaking.mp4';
     final t = title.toLowerCase();
 
     if (t.contains('speaking')) {
       return 'assets/videos/speaking.mp4';
     } else if (t.contains('facial') || t.contains('expression')) {
-      return 'assets/videos/facial expressions.mp4';
-    } else if (t.contains('posture') || t.contains('walking') || t.contains('pose') || t.contains('raise')) {
+      return 'assets/videos/facial_expression.mp4';
+    } else if (t.contains('posture') || t.contains('walking') || t.contains('pose') || t.contains('raise') || t.contains('gesture')) {
       return 'assets/videos/posture.mp4';
     } else if (t.contains('writing') || t.contains('reading')) {
       return 'assets/videos/writing.mp4';
     }
 
-    return 'assets/videos/communication.mp4';
+    return 'assets/videos/speaking.mp4'; // Use an existing video as fallback
   }
 
   void _initializeVideo() {
     if (_lessons.isEmpty) return;
 
-    final String skillTitle = selectedSkill?['title']?.toString() ?? '';
+    final String skillTitle = selectedSkill?['title']?.toString() ?? selectedSkill?['name']?.toString() ?? '';
     final String videoSource = _getVideoForSkill(skillTitle);
 
     _videoController?.removeListener(_videoListener);
@@ -61,6 +63,8 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
           _videoController?.play();
           _videoController?.setLooping(true);
         });
+      }).catchError((error) {
+        // Log error silently or handle it
       })
       ..addListener(_videoListener);
   }
@@ -129,15 +133,43 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
       _initializeVideo(); // Initialize video for the next lesson
     } else {
       // All lessons completed, navigate to AI practice
+      _videoController?.pause();
+
       final title = (selectedSkill?['title'] ?? 'Skill').toString().toLowerCase();
       final isReadingSkill = title.contains('communication') || 
                              title.contains('reading') || 
-                             title.contains('speaking') ||
-                             title.contains('listening') ||
+                             title.contains('writing') ||
+                             title.contains('listen') ||
                              title.contains('thanking') ||
-                             title.contains('greeting');
+                             title.contains('greeting') ||
+                             title.contains('time management');
+      
+      final isSpeakingSkill = title.contains('speaking');
+      final isFacialSkill = title.contains('facial') || title.contains('expression');
 
-      if (isReadingSkill) {
+      if (isSpeakingSkill) {
+        // Go to Speaking Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SpeakingPracticeScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
+          ),
+        );
+      } else if (isFacialSkill) {
+        // Go to Facial Expression Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FacialExpressionScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
+          ),
+        );
+      } else if (isReadingSkill) {
         // Go to Reading/Grammar Practice
         Navigator.push(
           context,
@@ -180,7 +212,7 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
           'Improve your expressions so you look more friendly, confident, and engaging while speaking.',
     },
     {
-      'title': 'Active Listning',
+      'title': 'Active Listening',
       'description':
           'Practice showing that you are listening by nodding, maintaining eye contact, and reacting appropriately during conversations.',
     },
