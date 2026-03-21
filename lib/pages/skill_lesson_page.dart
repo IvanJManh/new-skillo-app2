@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
+import 'package:newskilloapp/pages/reading_practice_screen.dart';
 import 'package:newskilloapp/services/firestore_service.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
 
@@ -144,6 +145,9 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
           'isAsset': true,
         }
       ];
+    } else {
+      // Shuffle the lessons so that the videos appear in a random order each time
+      _lessons.shuffle();
     }
 
     if (mounted) {
@@ -206,16 +210,37 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
       // Pause video before navigating to camera
       _videoController?.pause();
 
-      // Last lesson completed, go to AI Practice
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PoseCameraScreen(
-            skillNotifier: widget.skillNotifier,
-            skillTitle: selectedSkill?['title'] ?? 'Skill',
+      final title = (selectedSkill?['title'] ?? 'Skill').toString().toLowerCase();
+      final isReadingSkill = title.contains('communication') || 
+                             title.contains('reading') || 
+                             title.contains('speaking') ||
+                             title.contains('listening') ||
+                             title.contains('thanking') ||
+                             title.contains('greeting');
+
+      if (isReadingSkill) {
+        // Go to Reading/Grammar Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ReadingPracticeScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        // Last lesson completed, go to AI Pose Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PoseCameraScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
+          ),
+        );
+      }
     }
   }
 

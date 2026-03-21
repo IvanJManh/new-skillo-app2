@@ -89,14 +89,18 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
       } else {
         print('DEBUG: Image stream NOT started (unsupported/web)');
         setState(() {
-          _statusText = 'AI monitoring limited on this platform';
+          _statusText = 'AI monitoring is only supported on Android/iOS devices.';
         });
       }
       
       if (!mounted) return;
-      setState(() {
-        _statusText = 'AI feedback running';
-      });
+      
+      // Only set to running if it actually successfully started ML Kit
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        setState(() {
+          _statusText = 'AI feedback running';
+        });
+      }
     } catch (e) {
       if (!mounted) return;
       print('DEBUG: Camera crash: $e');
@@ -243,22 +247,51 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
             child: CameraPreview(_controller!),
           ),
           Positioned(
-            top: 16,
-            left: 16,
-            right: 16,
+            top: 40,
+            left: 20,
+            right: 20,
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(10),
+                color: _statusText.contains('Good') 
+                    ? Colors.green.withOpacity(0.85) 
+                    : _statusText.contains('straight') || _statusText.contains('Hold still')
+                        ? Colors.orange.withOpacity(0.85)
+                        : Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Text(
-                _statusText,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-                textAlign: TextAlign.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _statusText.contains('Good') 
+                        ? Icons.check_circle_outline 
+                        : _statusText.contains('straight')
+                            ? Icons.warning_amber_rounded
+                            : Icons.info_outline,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _statusText,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -284,76 +317,10 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     );
   }
 
-  void _finishPractice() async {
-    if (widget.skillNotifier == null) {
+  void _finishPractice() {
+    // Just close the camera screen without saving results or showing dialogs
+    if (mounted) {
       Navigator.pop(context);
-      return;
-    }
-
-    // Calculate simulated scores
-    double postureScore = _totalFrames > 0 
-        ? (_goodPostureCount / _totalFrames) * 10 
-        : 7.0; // Default if no frames processed
-    
-    // Clamp scores between 0 and 10 and add some randomness
-    postureScore = (postureScore + (2 + (DateTime.now().second % 3))).clamp(0, 10).toDouble();
-    double speechScore = (7.5 + (DateTime.now().minute % 2)).toDouble();
-    double facialScore = (8.0 + (DateTime.now().day % 2)).toDouble();
-
-    String feedback = "Your posture was good for ${((_goodPostureCount/_totalFrames.clamp(1, 1000000))*100).toInt()}% of the session. ";
-    if (postureScore > 8) {
-      feedback += "Excellent shoulder alignment! You look very confident.";
-    } else {
-      feedback += "Try to keep your shoulders more level to appear more composed.";
-    }
-    feedback += " Your tone was clear and engaging.";
-
-    final result = PracticeResults(
-      date: DateTime.now(),
-      postureScore: postureScore,
-      speechScore: speechScore,
-      facialScore: facialScore,
-      aiFeedback: feedback,
-    );
-
-    // Show loading
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
-
-    try {
-      await widget.skillNotifier!.addPracticeResults(result);
-
-      if (!mounted) return;
-      Navigator.pop(context); // Close loading dialog
-      
-      // Go back to home
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Practice results saved! Check your progress page.')),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      Navigator.pop(context); // Close loading dialog
-      
-      print('ERROR saving results: $e');
-      
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error Saving Results'),
-          content: Text('Could not save your progress. Error: $e\n\nPlease check your internet connection and Firestore permissions.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
     }
   }
 }

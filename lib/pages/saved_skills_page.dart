@@ -7,10 +7,10 @@ class SavedSkillsPage extends StatefulWidget {
   final SkillNotifier skillNotifier;
 
   final List<String> skillsList = [
+    'Writing Skills',
+    'Postures and Gestures',
     'Improve Communication',
     'Facial Expressions',
-    'Writing skills',
-    'Postures and gestures',
   ];
 
   double calculateProgress(int completed, int total) {
