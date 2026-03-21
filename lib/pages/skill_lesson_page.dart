@@ -27,6 +27,142 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   bool _isVideoReady = false;
   bool _canGoNext = false;
 
+  String _getVideoForSkill(String? title) {
+    if (title == null) return 'assets/videos/communication.mp4';
+    final t = title.toLowerCase();
+
+    if (t.contains('speaking')) {
+      return 'assets/videos/speaking.mp4';
+    } else if (t.contains('facial') || t.contains('expression')) {
+      return 'assets/videos/facial expressions.mp4';
+    } else if (t.contains('posture') || t.contains('walking') || t.contains('pose') || t.contains('raise')) {
+      return 'assets/videos/posture.mp4';
+    } else if (t.contains('writing') || t.contains('reading')) {
+      return 'assets/videos/writing.mp4';
+    }
+
+    return 'assets/videos/communication.mp4';
+  }
+
+  void _initializeVideo() {
+    if (_lessons.isEmpty) return;
+
+    final String skillTitle = selectedSkill?['title']?.toString() ?? '';
+    final String videoSource = _getVideoForSkill(skillTitle);
+
+    _videoController?.removeListener(_videoListener);
+    _videoController?.dispose();
+
+    _videoController = VideoPlayerController.asset(videoSource)
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() {
+          _isVideoReady = true;
+          _videoController?.play();
+          _videoController?.setLooping(true);
+        });
+      })
+      ..addListener(_videoListener);
+  }
+
+  void _videoListener() {
+    if (_videoController == null || !_videoController!.value.isInitialized) {
+      return;
+    }
+    // For now, we enable the next button immediately after video is ready.
+    // Later, we might add logic for video completion or specific interaction.
+    if (_videoController!.value.isInitialized && !_canGoNext) {
+      setState(() {
+        _canGoNext = true;
+      });
+    }
+  }
+
+  Future<void> _fetchLessons() async {
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      if (selectedSkill != null && selectedSkill!['id'] != null) {
+        final fetchedLessons = await _firestoreService.getLessonsForSkill(selectedSkill!['id']);
+        if (fetchedLessons.isNotEmpty) {
+          _lessons = fetchedLessons;
+        }
+      }
+
+      if (_lessons.isEmpty) {
+        // Create a dummy lesson if none exist in Firestore
+        _lessons = [
+          {
+            'title': 'Introduction',
+            'description': selectedSkill?['description'] ?? 'Learn the basics of this skill.',
+            'isAsset': true,
+          }
+        ];
+      }
+    } catch (e) {
+      print('Error fetching lessons: $e');
+      // Fallback to a dummy lesson if there's an error
+      _lessons = [
+        {
+          'title': 'Introduction',
+          'description': selectedSkill?['description'] ?? 'Learn the basics of this skill.',
+          'isAsset': true,
+        }
+      ];
+    } finally {
+      _initializeVideo(); // Initialize video after lessons are fetched
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  void _nextLesson() {
+    if (_currentLessonIndex < _lessons.length - 1) {
+      setState(() {
+        _currentLessonIndex++;
+        _isVideoReady = false; // Reset video ready state for new video
+        _canGoNext = false; // Disable button until new video is ready
+      });
+      _initializeVideo(); // Initialize video for the next lesson
+    } else {
+      // All lessons completed, navigate to AI practice
+      final title = (selectedSkill?['title'] ?? 'Skill').toString().toLowerCase();
+      final isReadingSkill = title.contains('communication') || 
+                             title.contains('reading') || 
+                             title.contains('speaking') ||
+                             title.contains('listening') ||
+                             title.contains('thanking') ||
+                             title.contains('greeting');
+
+      if (isReadingSkill) {
+        // Go to Reading/Grammar Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ReadingPracticeScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
+          ),
+        );
+      } else {
+        // Last lesson completed, go to AI Pose Practice
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PoseCameraScreen(
+              skillNotifier: widget.skillNotifier,
+              skillTitle: selectedSkill?['title'] ?? 'Skill',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   final List<Map<String, dynamic>> fallbackSkills = [
     {
       'title': 'Improve Communication',
@@ -83,165 +219,8 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
-  }
-
-  Future<void> _loadInitialData() async {
-    if (!mounted) return;
-    setState(() => _loading = true);
-
-    final String? initialTitle = widget.initialSkill?['title'];
-    Map<String, dynamic>? skill = widget.initialSkill;
-
-    // Fetch all skills to find the full data if needed or to pick a random one
-    final allSkills = await _firestoreService.getSkills();
-
-    if (skill == null || skill?['id'] == null || skill?['description'] == null) {
-      if (skill != null && skill?['title'] != null) {
-        // Find by title in our fetched list
-        final searchTitle = skill?['title'].toString().trim().toLowerCase();
-        try {
-          skill = allSkills.firstWhere(
-            (s) => s['title'].toString().trim().toLowerCase() == searchTitle,
-          );
-        } catch (e) {
-          // Fallback to separate query if not in allSkills
-          skill = await _firestoreService.getSkillByTitle(skill?['title']);
-        }
-      }
-
-      if (skill == null) {
-        if (allSkills.isNotEmpty) {
-          skill = allSkills[Random().nextInt(allSkills.length)];
-        } else {
-          skill = fallbackSkills[Random().nextInt(fallbackSkills.length)];
-        }
-      }
-    }
-
-    selectedSkill = skill;
-
-    if (initialTitle != null && selectedSkill != null) {
-      selectedSkill = Map<String, dynamic>.from(selectedSkill!);
-      selectedSkill!['title'] = initialTitle;
-    }
-
-    if (selectedSkill != null && selectedSkill!['id'] != null) {
-      _lessons = await _firestoreService.getLessons(selectedSkill!['id']);
-    }
-
-    // Fix: Limit "Improve Communication" to only one lesson as requested
-    if (selectedSkill?['title']?.toString().trim().toLowerCase() == 'improve communication' && _lessons.length > 1) {
-      _lessons = [_lessons.first];
-    }
-
-    if (_lessons.isEmpty) {
-      // Create a dummy lesson if none exist in Firestore
-      _lessons = [
-        {
-          'title': 'Introduction',
-          'description': selectedSkill?['description'] ?? 'Learn the basics of this skill.',
-          'videoUrl': 'assets/videos/communication.mp4', // Default asset
-          'isAsset': true,
-        }
-      ];
-    } else {
-      // Shuffle the lessons so that the videos appear in a random order each time
-      _lessons.shuffle();
-    }
-
-    if (mounted) {
-      setState(() => _loading = false);
-      _initializeVideo();
-    }
-  }
-
-  void _initializeVideo() {
-    if (_lessons.isEmpty) return;
-
-    final lesson = _lessons[_currentLessonIndex];
-    final String rawUrl = lesson['videoUrl']?.toString() ?? '';
-    final String videoSource = rawUrl.isNotEmpty ? rawUrl : 'assets/videos/communication.mp4';
-    final bool isAsset = lesson['isAsset'] ?? videoSource.startsWith('assets/');
-
-    _isVideoReady = false;
-    _canGoNext = false;
-
-    if (_videoController != null) {
-      _videoController!.removeListener(_videoListener);
-      _videoController!.dispose();
-    }
-
-    if (isAsset) {
-      _videoController = VideoPlayerController.asset(videoSource);
-    } else {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(videoSource));
-    }
-
-    _videoController!.initialize().then((_) {
-      if (!mounted) return;
-      setState(() {
-        _isVideoReady = true;
-      });
-      _videoController!.addListener(_videoListener);
-      _videoController!.play();
-    });
-  }
-
-  void _videoListener() {
-    if (_videoController != null &&
-        _videoController!.value.position >= _videoController!.value.duration &&
-        _videoController!.value.duration > Duration.zero) {
-      if (!_canGoNext) {
-        setState(() {
-          _canGoNext = true;
-        });
-      }
-    }
-  }
-
-  void _nextLesson() {
-    if (_currentLessonIndex < _lessons.length - 1) {
-      setState(() {
-        _currentLessonIndex++;
-      });
-      _initializeVideo();
-    } else {
-      // Pause video before navigating to camera
-      _videoController?.pause();
-
-      final title = (selectedSkill?['title'] ?? 'Skill').toString().toLowerCase();
-      final isReadingSkill = title.contains('communication') || 
-                             title.contains('reading') || 
-                             title.contains('speaking') ||
-                             title.contains('listening') ||
-                             title.contains('thanking') ||
-                             title.contains('greeting');
-
-      if (isReadingSkill) {
-        // Go to Reading/Grammar Practice
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ReadingPracticeScreen(
-              skillNotifier: widget.skillNotifier,
-              skillTitle: selectedSkill?['title'] ?? 'Skill',
-            ),
-          ),
-        );
-      } else {
-        // Last lesson completed, go to AI Pose Practice
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PoseCameraScreen(
-              skillNotifier: widget.skillNotifier,
-              skillTitle: selectedSkill?['title'] ?? 'Skill',
-            ),
-          ),
-        );
-      }
-    }
+    selectedSkill = widget.initialSkill ?? fallbackSkills[Random().nextInt(fallbackSkills.length)];
+    _fetchLessons();
   }
 
   @override
@@ -260,7 +239,7 @@ class _SkillLessonPageState extends State<SkillLessonPage> {
       );
     }
 
-    final currentLesson = _lessons[_currentLessonIndex];
+    final currentLesson = _lessons.isNotEmpty ? _lessons[_currentLessonIndex] : {};
 
     return Scaffold(
       appBar: AppBar(
