@@ -208,7 +208,9 @@ class HomeContent extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const SkillLessonPage(),
+                              builder: (_) => SkillLessonPage(
+                                skillNotifier: skillNotifier,
+                              ),
                             ),
                           );
                         } else {
@@ -245,7 +247,7 @@ class HomeContent extends StatelessWidget {
                               Text(
                                 index == 0
                                     ? " Today's 2 minute Skill"
-                                    : " Current Streak",
+                                    : " Current Streak: ${skillNotifier.streak} Days",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 17,
@@ -306,8 +308,18 @@ class HomeContent extends StatelessWidget {
                           itemCount: skills.length,
                           itemBuilder: (context, index) {
                             final skill = skills[index];
-                            return Container(
-                              width: 140,
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SkillLessonPage(
+                                      initialSkill: {'title': skill},
+                                      skillNotifier: skillNotifier,
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Container(
                                 width: 140,
                                 margin: EdgeInsets.only(right: 5),
@@ -321,7 +333,7 @@ class HomeContent extends StatelessWidget {
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: EdgeInsets.all(10), // FIXED
+                                    padding: EdgeInsets.all(10),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,

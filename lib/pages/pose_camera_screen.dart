@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -8,8 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
+import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/pages/practice_results.dart';
+
 class PoseCameraScreen extends StatefulWidget {
-  const PoseCameraScreen({super.key});
+  final SkillNotifier? skillNotifier;
+  final String skillTitle;
+
+  const PoseCameraScreen({super.key, this.skillNotifier, this.skillTitle = 'Skill'});
 
   @override
   State<PoseCameraScreen> createState() => _PoseCameraScreenState();
@@ -21,65 +27,86 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
 
   bool _isProcessing = false;
   String _statusText = 'AI feedback running.....';
-  List<Pose> _poses = [];
+  int _goodPostureCount = 0;
+  int _totalFrames = 0;
+  bool _practiceStarted = false;
 
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      _poseDetector = PoseDetector(
-        options: PoseDetectorOptions(
-          mode: PoseDetectionMode.stream,
-        ),
-      );
-    }
+
+    _poseDetector = PoseDetector(
+      options: PoseDetectorOptions(
+        mode: PoseDetectionMode.stream,
+      ),
+    );
 
     _initCamera();
   }
 
   Future<void> _initCamera() async {
     try {
+      if (_controller != null) {
+        await _controller!.dispose();
+        _controller = null;
+      }
+
+      print('DEBUG: Starting camera initialization');
       final cameras = await availableCameras();
+
+      if (cameras.isEmpty) {
+        print('DEBUG: No cameras found');
+        setState(() => _statusText = 'No cameras found');
+        return;
+      }
 
       final frontCamera = cameras.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.front,
         orElse: () => cameras.first,
       );
 
+      print('DEBUG: Camera found, initializing controller');
       _controller = CameraController(
         frontCamera,
         ResolutionPreset.medium,
         enableAudio: false,
-        imageFormatGroup: !kIsWeb && Platform.isIOS 
-            ? ImageFormatGroup.bgra8888 
-            : ImageFormatGroup.yuv420,
       );
 
       await _controller!.initialize();
 
       if (!mounted) return;
+      print('DEBUG: Camera initialized');
 
-      if (kIsWeb) {
-        setState(() {
-          _statusText = 'Web: AI feedback is disabled (mobile only)';
-        });
-      } else {
-        setState(() {
-          _statusText = 'Posture check active';
-        });
+      setState(() {
+        _statusText = 'Posture check active';
+        _practiceStarted = true;
+      });
+
+      // startImageStream is only supported on mobile platforms
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         await _controller!.startImageStream(_processCameraImage);
-        if (!mounted) return;
+        print('DEBUG: Image stream started');
+      } else {
+        print('DEBUG: Image stream NOT started (unsupported/web)');
+        setState(() {
+          _statusText = 'AI monitoring is only supported on Android/iOS devices.';
+        });
+      }
+      
+      if (!mounted) return;
+      
+      // Only set to running if it actually successfully started ML Kit
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         setState(() {
           _statusText = 'AI feedback running';
         });
       }
     } catch (e) {
-      print("Error initializing camera: $e");
-      if (mounted) {
-        setState(() {
-          _statusText = "Error: $e";
-        });
-      }
+      if (!mounted) return;
+      print('DEBUG: Camera crash: $e');
+      setState(() {
+        _statusText = 'Camera error: $e';
+      });
     }
   }
 
@@ -94,14 +121,11 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
         _controller!.description,
       );
 
-      if (inputImage == null) return;
-
       final poses = await _poseDetector.processImage(inputImage);
 
       if (!mounted) return;
 
       setState(() {
-        _poses = poses;
         if (poses.isEmpty) {
           _statusText = 'Stand in front of the camera';
           return;
@@ -118,10 +142,12 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
           return;
         }
 
+        _totalFrames++;
         final shoulderDiff = (leftShoulder.y - rightShoulder.y).abs();
 
         if (shoulderDiff < 25) {
           _statusText = 'Good posture ✅';
+          _goodPostureCount++;
         } else {
           _statusText = 'Keep your shoulders straight';
         }
@@ -136,16 +162,16 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     }
   }
 
-  InputImage? _inputImageFromCameraImage(
+  InputImage _inputImageFromCameraImage(
     CameraImage image,
     CameraDescription description,
   ) {
-    if (kIsWeb) return null;
-
     final WriteBuffer allBytes = WriteBuffer();
+
     for (final Plane plane in image.planes) {
       allBytes.putUint8List(plane.bytes);
     }
+
     final Uint8List bytes = allBytes.done().buffer.asUint8List();
 
     final Size imageSize = Size(
@@ -157,50 +183,56 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
         InputImageRotationValue.fromRawValue(description.sensorOrientation) ??
             InputImageRotation.rotation0deg;
 
-    final InputImageFormat? format =
-        InputImageFormatValue.fromRawValue(image.format.raw);
+    final InputImageFormat format =
+        InputImageFormatValue.fromRawValue(image.format.raw) ??
+            ((!kIsWeb && Platform.isIOS)
+                ? InputImageFormat.bgra8888
+                : InputImageFormat.yuv420);
 
-    if (format == null) return null;
+    final InputImageMetadata metadata = InputImageMetadata(
+      size: imageSize,
+      rotation: rotation,
+      format: format,
+      bytesPerRow: image.planes.first.bytesPerRow,
+    );
 
     return InputImage.fromBytes(
       bytes: bytes,
-      metadata: InputImageMetadata(
-        size: imageSize,
-        rotation: rotation,
-        format: format,
-        bytesPerRow: image.planes[0].bytesPerRow,
-      ),
+      metadata: metadata,
     );
   }
 
   @override
   void dispose() {
     _controller?.dispose();
-    if (!kIsWeb) {
-      _poseDetector.close();
-    }
+    _poseDetector.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_statusText.startsWith('Error:')) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Pose Camera')),
-        body: Center(
-          child: Text(
-            _statusText,
-            style: const TextStyle(color: Colors.red),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
-
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const Scaffold(
+      return Scaffold(
+        appBar: AppBar(title: const Text('Initializing Camera')),
         body: Center(
-          child: CircularProgressIndicator(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 20),
+              Text(_statusText, textAlign: TextAlign.center),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _initCamera,
+                child: const Text('Retry Camera'),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -214,142 +246,81 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
           Positioned.fill(
             child: CameraPreview(_controller!),
           ),
-          if (_poses.isNotEmpty)
-            Positioned.fill(
-              child: CustomPaint(
-                painter: PosePainter(
-                  _poses,
-                  _controller!.value.previewSize!,
-                  _controller!.description.sensorOrientation,
-                  _controller!.description.lensDirection,
-                ),
+          Positioned(
+            top: 40,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              decoration: BoxDecoration(
+                color: _statusText.contains('Good') 
+                    ? Colors.green.withOpacity(0.85) 
+                    : _statusText.contains('straight') || _statusText.contains('Hold still')
+                        ? Colors.orange.withOpacity(0.85)
+                        : Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _statusText.contains('Good') 
+                        ? Icons.check_circle_outline 
+                        : _statusText.contains('straight')
+                            ? Icons.warning_amber_rounded
+                            : Icons.info_outline,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _statusText,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
           Positioned(
-            top: 16,
-            left: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                _statusText,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+            bottom: 30,
+            left: 50,
+            right: 50,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 71, 172, 200),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
+              onPressed: _finishPractice,
+              child: const Text('Finish Practice', style: TextStyle(fontSize: 18)),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class PosePainter extends CustomPainter {
-  PosePainter(
-    this.poses,
-    this.absoluteImageSize,
-    this.rotation,
-    this.lensDirection,
-  );
-
-  final List<Pose> poses;
-  final Size absoluteImageSize;
-  final int rotation;
-  final CameraLensDirection lensDirection;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..color = Colors.greenAccent;
-
-    final dotPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = Colors.red;
-
-    for (final pose in poses) {
-      pose.landmarks.forEach((_, landmark) {
-        canvas.drawCircle(
-          Offset(
-            translateX(landmark.x, rotation, size, absoluteImageSize),
-            translateY(landmark.y, rotation, size, absoluteImageSize),
-          ),
-          4,
-          dotPaint,
-        );
-      });
-
-      void paintLine(PoseLandmarkType type1, PoseLandmarkType type2) {
-        final landmark1 = pose.landmarks[type1];
-        final landmark2 = pose.landmarks[type2];
-        if (landmark1 != null && landmark2 != null) {
-          canvas.drawLine(
-            Offset(
-              translateX(landmark1.x, rotation, size, absoluteImageSize),
-              translateY(landmark1.y, rotation, size, absoluteImageSize),
-            ),
-            Offset(
-              translateX(landmark2.x, rotation, size, absoluteImageSize),
-              translateY(landmark2.y, rotation, size, absoluteImageSize),
-            ),
-            paint,
-          );
-        }
-      }
-
-      // Draw skeleton lines
-      paintLine(PoseLandmarkType.leftShoulder, PoseLandmarkType.rightShoulder);
-      paintLine(PoseLandmarkType.leftShoulder, PoseLandmarkType.leftElbow);
-      paintLine(PoseLandmarkType.leftElbow, PoseLandmarkType.leftWrist);
-      paintLine(PoseLandmarkType.rightShoulder, PoseLandmarkType.rightElbow);
-      paintLine(PoseLandmarkType.rightElbow, PoseLandmarkType.rightWrist);
-      paintLine(PoseLandmarkType.leftShoulder, PoseLandmarkType.leftHip);
-      paintLine(PoseLandmarkType.rightShoulder, PoseLandmarkType.rightHip);
-      paintLine(PoseLandmarkType.leftHip, PoseLandmarkType.rightHip);
-    }
-  }
-
-  @override
-  bool shouldRepaint(PosePainter oldDelegate) {
-    return oldDelegate.absoluteImageSize != absoluteImageSize ||
-        oldDelegate.poses != poses;
-  }
-
-  double translateX(
-      double x, int rotation, Size size, Size absoluteImageSize) {
-    double transitionedX;
-    switch (rotation) {
-      case 90:
-        transitionedX = x * size.width / absoluteImageSize.height;
-        break;
-      case 270:
-        transitionedX = size.width - x * size.width / absoluteImageSize.height;
-        break;
-      default:
-        transitionedX = x * size.width / absoluteImageSize.width;
-        break;
-    }
-    if (lensDirection == CameraLensDirection.front) {
-      return size.width - transitionedX;
-    }
-    return transitionedX;
-  }
-
-  double translateY(
-      double y, int rotation, Size size, Size absoluteImageSize) {
-    switch (rotation) {
-      case 90:
-      case 270:
-        return y * size.height / absoluteImageSize.width;
-      default:
-        return y * size.height / absoluteImageSize.height;
+  void _finishPractice() {
+    // Just close the camera screen without saving results or showing dialogs
+    if (mounted) {
+      Navigator.pop(context);
     }
   }
 }
