@@ -34,14 +34,22 @@ class SkillNotifier extends ValueNotifier<List<String>> {
   }
 
   Future<void> addSkill(String skill) async {
-    await _firestoreService.addSavedSkill(userId, skill);
+    if (!value.contains(skill)) {
+      value = List.from(value)..add(skill);
+      await _firestoreService.addSavedSkill(userId, skill);
+    }
   }
 
   Future<void> removeSkill(String skill) async {
-    await _firestoreService.removeSavedSkill(userId, skill);
+    if (value.contains(skill)) {
+      value = List.from(value)..remove(skill);
+      await _firestoreService.removeSavedSkill(userId, skill);
+    }
   }
 
   Future<void> addPracticeResults(PracticeResults results) async {
+    _practiceResults = [results, ..._practiceResults];
+    notifyListeners();
     await _firestoreService.addPracticeResult(userId, results);
   }
 

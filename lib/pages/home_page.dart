@@ -184,7 +184,7 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<List<String>>(
       valueListenable: skillNotifier,
       builder: (context, skills, child) {
         return SingleChildScrollView(
@@ -287,27 +287,60 @@ class HomeContent extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: skills.isEmpty
-                      ? Center(
-                          child: Card(
-                            elevation: 0.3,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(
-                                color: Color.fromARGB(255, 71, 172, 200),
-                                width: 1,
-                              ),
-                            ),
+                      ? InkWell(
+                          onTap: () {
+                            final homeState =
+                                context.findAncestorStateOfType<_HomePageState>();
+                            if (homeState != null) {
+                              homeState._pageController.animateToPage(
+                                1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          child: Center(
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.9,
-                              height: 90,
-                              child: Center(
-                                child: Text(
-                                  'No skills saved yet',
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                  ),
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Color.fromARGB(255, 71, 172, 200),
+                                  width: 1,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 1,
+                                    offset: Offset(0.5, 0.5),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.bookmark_add_outlined,
+                                      color: Color.fromARGB(255, 71, 172, 200),
+                                      size: 30),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'No skills saved yet',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tap here to browse and save skills!',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -332,44 +365,47 @@ class HomeContent extends StatelessWidget {
                               },
                               child: Container(
                                 width: 140,
-                                margin: EdgeInsets.only(right: 5),
-                                child: Card(
+                                margin: EdgeInsets.only(
+                                    right: 12, bottom: 10, top: 4, left: 4),
+                                decoration: BoxDecoration(
                                   color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: BorderSide(
-                                      color: Color.fromARGB(255, 71, 172, 200),
-                                      width: 1,
-                                    ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Color.fromARGB(255, 71, 172, 200),
+                                    width: 1,
                                   ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'lib/images/IMG_2258.PNG',
-                                          height: 100,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        SizedBox(
-                                          height: 12,
-                                        ),
-                                        Text(
-                                          skill,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 3,
+                                      offset: Offset(0.5, 1),
                                     ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'lib/images/IMG_2258.PNG',
+                                        height: 100,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      SizedBox(height: 12),
+                                      Text(
+                                        skill,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             );
-                          }),
+                          },
+                        ),
                 ),
               ],
             ),

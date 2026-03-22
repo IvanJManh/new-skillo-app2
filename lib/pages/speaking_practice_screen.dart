@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
 import 'package:newskilloapp/pages/practice_results.dart';
@@ -95,7 +96,14 @@ class _SpeakingPracticeScreenState extends State<SpeakingPracticeScreen> {
       setState(() {});
     } catch (e) {
       if (!mounted) return;
-      setState(() => _statusText = 'Camera error: $e');
+      print('DEBUG: Camera crash: $e');
+      String errorMsg = e.toString();
+      // On Web, accessing camera via HTTP on a local IP causes a JSOBJECT/TypeError
+      if (kIsWeb && (errorMsg.toLowerCase().contains('jsobject') || errorMsg.toLowerCase().contains('typeerror'))) {
+        errorMsg = 'Camera requires a secure connection (HTTPS) on mobile browsers. '
+                   'Please use a secure tunnel (like ngrok) or test on localhost.';
+      }
+      setState(() => _statusText = 'Camera error: $errorMsg');
     }
   }
 

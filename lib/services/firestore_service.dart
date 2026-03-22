@@ -23,7 +23,7 @@ class FirestoreService {
         .collection('savedSkills')
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => doc.data()['name'] as String)
+            .map((doc) => (doc.data()['name'] as String?) ?? doc.id)
             .toList());
   }
 

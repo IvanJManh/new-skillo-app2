@@ -104,8 +104,14 @@ class _PoseCameraScreenState extends State<PoseCameraScreen> {
     } catch (e) {
       if (!mounted) return;
       print('DEBUG: Camera crash: $e');
+      String errorMsg = e.toString();
+      // On Web, accessing camera via HTTP on a local IP causes a JSOBJECT/TypeError
+      if (kIsWeb && (errorMsg.toLowerCase().contains('jsobject') || errorMsg.toLowerCase().contains('typeerror'))) {
+        errorMsg = 'Camera requires a secure connection (HTTPS) on mobile browsers. '
+                   'Please use a secure tunnel (like ngrok) or test on localhost.';
+      }
       setState(() {
-        _statusText = 'Camera error: $e';
+        _statusText = 'Camera error: $errorMsg';
       });
     }
   }
