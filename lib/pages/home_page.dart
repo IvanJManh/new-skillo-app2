@@ -1,9 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/profile_page.dart';
 import 'package:newskilloapp/pages/progress_page.dart';
 import 'package:newskilloapp/pages/saved_skills_page.dart';
-
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/pages/pose_camera_screen.dart';
+import 'package:newskilloapp/pages/skill_lesson_page.dart';
 import 'package:newskilloapp/screens/practice_facial_expression_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -98,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                         _currentIndex = 3;
                         _pageController.jumpToPage(3);
                       });
-                      (
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProfilePage(
@@ -183,7 +185,7 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<List<String>>(
       valueListenable: skillNotifier,
       builder: (context, skills, child) {
         return SingleChildScrollView(
@@ -205,14 +207,32 @@ class HomeContent extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         if (index == 0) {
-                          // Navigate to facial expression practice screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PracticeFacialExpressionScreen(),
-                            ),
-                          );
+                          final List<String> dailySkills = [
+                            'Writing Skills',
+                            'Postures and Gestures',
+                            'Speaking',
+                            'Facial Expression',
+                          ];
+                          final randomSkill = dailySkills[Random().nextInt(dailySkills.length)];
+
+                          if (randomSkill == 'Facial Expression') {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PracticeFacialExpressionScreen(),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SkillLessonPage(
+                                  initialSkill: {'title': randomSkill},
+                                  skillNotifier: skillNotifier,
+                                ),
+                              ),
+                            );
+                          }
                         } else {
                           final homeState =
                               context.findAncestorStateOfType<_HomePageState>();
@@ -247,7 +267,7 @@ class HomeContent extends StatelessWidget {
                               Text(
                                 index == 0
                                     ? " Today's 2 minute Skill"
-                                    : " Current Streak",
+                                    : " Current Streak: ${skillNotifier.streak} Days",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 17,
@@ -277,27 +297,60 @@ class HomeContent extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: skills.isEmpty
-                      ? Center(
-                          child: Card(
-                            elevation: 0.3,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(
-                                color: Color.fromARGB(255, 71, 172, 200),
-                                width: 1,
-                              ),
-                            ),
+                      ? InkWell(
+                          onTap: () {
+                            final homeState =
+                                context.findAncestorStateOfType<_HomePageState>();
+                            if (homeState != null) {
+                              homeState._pageController.animateToPage(
+                                1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          child: Center(
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.9,
-                              height: 90,
-                              child: Center(
-                                child: Text(
-                                  'No skills saved yet',
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                  ),
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Color.fromARGB(255, 71, 172, 200),
+                                  width: 1,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 1,
+                                    offset: Offset(0.5, 0.5),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.bookmark_add_outlined,
+                                      color: Color.fromARGB(255, 71, 172, 200),
+                                      size: 30),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'No skills saved yet',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tap here to browse and save skills!',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -308,48 +361,61 @@ class HomeContent extends StatelessWidget {
                           itemCount: skills.length,
                           itemBuilder: (context, index) {
                             final skill = skills[index];
-                            return Container(
-                              width: 140,
-                              child: Container(
-                                width: 140,
-                                margin: EdgeInsets.only(right: 5),
-                                child: Card(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: BorderSide(
-                                      color: Color.fromARGB(255, 71, 172, 200),
-                                      width: 1,
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SkillLessonPage(
+                                      initialSkill: {'title': skill},
+                                      skillNotifier: skillNotifier,
                                     ),
                                   ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10), // FIXED
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'lib/images/IMG_2258.PNG',
-                                          height: 100,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        SizedBox(
-                                          height: 12,
-                                        ),
-                                        Text(
-                                          skill,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
+                                );
+                              },
+                              child: Container(
+                                width: 140,
+                                margin: EdgeInsets.only(
+                                    right: 12, bottom: 10, top: 4, left: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Color.fromARGB(255, 71, 172, 200),
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 3,
+                                      offset: Offset(0.5, 1),
                                     ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'lib/images/IMG_2258.PNG',
+                                        height: 100,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      SizedBox(height: 12),
+                                      Text(
+                                        skill,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             );
-                          }),
+                          },
+                        ),
                 ),
               ],
             ),
