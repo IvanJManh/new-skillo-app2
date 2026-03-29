@@ -12,7 +12,12 @@
           "package_name": "com.example.newskilloapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "401436382205-unib2uuvj2uiq1dhkqq8uc85at7eal17.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDj6iiNPc5Zgdmw2Tu5AbwM1_FQ9gdny0Q"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401436382205-unib2uuvj2uiq1dhkqq8uc85at7eal17.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "401436382205-tijnrv7930ism0tcrch55qk0np5l9oh5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.newskilloapp"
+              }
+            }
+          ]
         }
       }
     }

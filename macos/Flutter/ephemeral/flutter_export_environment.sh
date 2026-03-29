@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\flutter\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\HP\Desktop\newskilloapp-20260209T132138Z-1-001\newskilloapp"
+export "FLUTTER_ROOT=C:\Users\DELL\OneDrive\Documents\flutter\flutter"
+export "FLUTTER_APPLICATION_PATH=C:\Users\DELL\OneDrive\Documents\flutter projects\working-main-skillo-private\new-skillo-app2-main"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

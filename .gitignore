@@ -1,93 +1,18 @@
-# Flutter/Dart/Pub related
 .dart_tool/
-.packages
-.pub/
 build/
-flutter_*.iml
-
-# Android related
-**/android/**/gradle-wrapper.jar
-**/android/.gradle
-**/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/local.properties
-**/android/**/GeneratedPluginRegistrant.java
-
-# iOS/XCode related
-**/ios/**/*.mode1v3
-**/ios/**/*.mode2v3
-**/ios/**/*.moved-aside
-**/ios/**/*.pbxuser
-**/ios/**/*.perspectivev3
-**/ios/**/*sync/
-**/ios/**/.sconsign.dblite
-**/ios/**/DerivedData/
-**/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
-**/ios/**/Flutter/App.framework
-**/ios/**/Flutter/Flutter.framework
-**/ios/**/Flutter/Generated.xcconfig
-**/ios/**/Flutter/app.flx
-**/ios/**/Flutter/app.zip
-**/ios/**/Flutter/flutter_assets/
-**/ios/**/ServiceDefinitions.json
-**/ios/**/Runner/GeneratedPluginRegistrant.*
-
-# Exceptions to above rules.
-!**/ios/**/default.mode1v3
-!**/ios/**/default.mode2v3
-!**/ios/**/default.pbxuser
-!**/ios/**/default.perspectivev3
-
-# macOS
-**/macos/Flutter/GeneratedPluginRegistrant.swift
-
-# Windows
-**/windows/flutter/generated_plugin_registrant.cc
-**/windows/flutter/generated_plugin_registrant.h
-
-# Linux
-**/linux/flutter/generated_plugin_registrant.cc
-**/linux/flutter/generated_plugin_registrant.h
-
-# Web
-**/web/icons/
-**/web/index.html
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Exceptions to above rules.
-!**/ios/**/default.mode1v3
-!**/ios/**/default.mode2v3
-!**/ios/**/default.pbxuser
-!**/ios/**/default.perspectivev3
-
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
-
-# VS Code
-.vscode/
-
-# IntelliJ
 .idea/
-
-# Temporary folders
-tmp/
-temp/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+.vscode/
+android/.gradle/
+android/local.properties
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+macos/Flutter/ephemeral/
+macos/Podfile.lock
+macos/Pods/
+macos/Runner.xcworkspace/
+windows/flutter/ephemeral/
+.flutter-plugins-dependencies
+node_modules/
+*.log
+*.lock
+.env

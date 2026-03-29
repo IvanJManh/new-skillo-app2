@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:newskilloapp/pages/home_page.dart';
 import 'package:newskilloapp/pages/sign_up_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
+import 'package:newskilloapp/services/auth_service.dart';
+import 'package:newskilloapp/auth.gate.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -11,10 +13,12 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage>{
+  final _auth = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
   String? _errorText;
-  SkillNotifier skillNotifier = SkillNotifier();
+
 
   void _checkPassword(){
     if(_passwordController.text != _passwordController.text){
@@ -132,9 +136,35 @@ class _SignInPageState extends State<SignInPage>{
               SizedBox(width: double.infinity,
               height: 45,
               child: ElevatedButton(
-                  onPressed: _errorText != null ? null : () async{
-                  Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => HomePage(skillNotifier: skillNotifier, userName: '', userEmail: '',)));
+                  onPressed: (_errorText != null || _isLoading) ? null : () async{
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    try {
+                      await _auth.signIn(
+                        email: _emailController.text, 
+                        password: _passwordController.text
+                      );
+                      if (mounted) {
+                        Navigator.pushAndRemoveUntil(
+                          context, 
+                          MaterialPageRoute(builder: (context) => const AuthGate()),
+                          (route) => false
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Sign in failed: $e")),
+                        );
+                      }
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    }
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 71, 172, 200),
@@ -143,7 +173,13 @@ class _SignInPageState extends State<SignInPage>{
                   )
 
                 ), 
-                child: const Text(
+                child: _isLoading 
+                ? const SizedBox(
+                    height: 20, 
+                    width: 20, 
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                  )
+                : const Text(
                   'Sign In',
                   style: TextStyle(
                     color: Color.fromARGB(255, 255, 255, 255),
@@ -155,7 +191,7 @@ class _SignInPageState extends State<SignInPage>{
               ),
               
 
-              const SizedBox(height: 190),
+              const SizedBox(height: 150),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

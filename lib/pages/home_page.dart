@@ -6,7 +6,6 @@ import 'package:newskilloapp/pages/saved_skills_page.dart';
 import 'package:newskilloapp/pages/skill_notifier.dart';
 import 'package:newskilloapp/pages/pose_camera_screen.dart';
 import 'package:newskilloapp/pages/skill_lesson_page.dart';
-import 'package:newskilloapp/screens/practice_facial_expression_screen.dart';
 
 class HomePage extends StatefulWidget {
   final SkillNotifier skillNotifier;
@@ -215,24 +214,15 @@ class HomeContent extends StatelessWidget {
                           ];
                           final randomSkill = dailySkills[Random().nextInt(dailySkills.length)];
 
-                          if (randomSkill == 'Facial Expression') {
-                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PracticeFacialExpressionScreen(),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SkillLessonPage(
+                                initialSkill: {'title': randomSkill},
+                                skillNotifier: skillNotifier,
                               ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => SkillLessonPage(
-                                  initialSkill: {'title': randomSkill},
-                                  skillNotifier: skillNotifier,
-                                ),
-                              ),
-                            );
-                          }
+                            ),
+                          );
                         } else {
                           final homeState =
                               context.findAncestorStateOfType<_HomePageState>();
