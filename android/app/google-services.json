@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "401436382205",
+    "project_id": "skilloapp-5d67c",
+    "storage_bucket": "skilloapp-5d67c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401436382205:android:47511e04f171fa735e7f94",
+        "android_client_info": {
+          "package_name": "com.example.newskilloapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj6iiNPc5Zgdmw2Tu5AbwM1_FQ9gdny0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
